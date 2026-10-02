@@ -2,18 +2,15 @@ import { DEMO } from '@/lib/demo';
 import { getDict } from '@/i18n/server';
 import { Guilloche } from '@/components/Guilloche';
 import { LangToggle } from '@/components/LangToggle';
+import { AuthPanel } from './AuthPanel';
 import { signIn, signUp } from './actions';
 
-const field =
-  'w-full rounded-xl border border-foil/60 bg-note-deep/60 px-4 py-3 text-paper outline-none placeholder:text-paper/50 focus:border-foil';
-const gold = 'w-full rounded-full bg-foil py-3 font-semibold text-note-deep hover:bg-paper';
 
 export default async function Login({ searchParams }: { searchParams: Promise<{ next?: string; error?: string; check?: string }> }) {
   const sp = await searchParams;
   const { t } = await getDict();
   const l = t.login;
   const err = sp.error === '1' ? l.bad : sp.error === '2' ? l.badSignup : sp.error === '3' ? l.exists : sp.error === 'nooffice' ? l.noOffice : sp.error ? '!' : '';
-  const next = <input type="hidden" name="next" value={sp.next ?? ''} />;
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-5xl items-center p-4 sm:p-8">
@@ -35,29 +32,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
             {err && <p role="alert" className="rounded-xl border border-paper/40 bg-void px-4 py-3 text-sm">{err}</p>}
             {sp.check && <p className="text-sm text-foil">{l.check}</p>}
 
-            <form action={signIn} className="space-y-3">
-              {next}
-              <input name="email" type="email" required placeholder={l.email} className={field} dir="ltr" autoComplete="email" />
-              <input name="password" type="password" required placeholder={l.password} className={field} dir="ltr" autoComplete="current-password" />
-              <button className={gold}>{l.signIn}</button>
-            </form>
-
-            <form action={signIn} className="space-y-3 border-t border-foil/30 pt-5">
-              {next}
-              <input type="hidden" name="email" value={DEMO.email} />
-              <input type="hidden" name="password" value={DEMO.password} />
-              <p className="text-sm text-paper/70">{l.demoNote}</p>
-              <button className="w-full rounded-full border border-foil py-3 font-semibold text-foil hover:bg-foil hover:text-note-deep">{l.demoBtn}</button>
-            </form>
-
-            <details className="border-t border-foil/30 pt-4 text-sm text-paper/70">
-              <summary className="cursor-pointer">{l.createSummary}</summary>
-              <form action={signUp} className="mt-3 space-y-3">
-                <input name="email" type="email" required placeholder={l.email} className={field} dir="ltr" autoComplete="email" />
-                <input name="password" type="password" required minLength={8} placeholder={l.passwordHint} className={field} dir="ltr" autoComplete="new-password" />
-                <button className="w-full rounded-full border border-paper/50 py-3 hover:border-foil hover:text-foil">{l.create}</button>
-              </form>
-            </details>
+            <AuthPanel t={l} next={sp.next ?? ''} demo={DEMO} signIn={signIn} signUp={signUp} startOnSignUp={sp.error === '2'} />
           </div>
         </div>
       </section>
