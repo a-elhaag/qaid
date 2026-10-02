@@ -22,8 +22,10 @@ export function appearsIn(
 ): boolean {
   const text = normalizeDigits(markdown);
   if (field === 'vendor') {
-    const s = String(value).toLowerCase();
-    return new RegExp(`(?<![\\w])${esc(s)}(?![\\w])`).test(text.toLowerCase());
+    // Normalize vendor value: trim, lowercase, collapse spaces, normalize digits
+    const s = normalizeDigits(String(value).trim().toLowerCase().replace(/\s+/g, ' '));
+    // Unicode-aware word boundaries for proper Arabic/non-ASCII support
+    return new RegExp(`(?<![\\p{L}\\p{N}])${esc(s)}(?![\\p{L}\\p{N}])`, 'u').test(text.toLowerCase());
   }
   if (field === 'date') return dateForms(String(value)).some((f) => text.includes(f));
   const n = Number(value);

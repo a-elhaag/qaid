@@ -24,6 +24,14 @@ describe('appearsIn', () => {
   it('finds dates in dd/mm/yyyy', () => {
     expect(appearsIn('Date: 05/10/2026', 'date', '2026-10-05')).toBe(true);
   });
+  it('does not match Arabic vendor as substring of longer name', () => {
+    expect(appearsIn('Welcome to سبينسز', 'vendor', 'سبينس')).toBe(false);
+    expect(appearsIn('Welcome to سبينسز', 'vendor', 'سبينسز')).toBe(true);
+  });
+  it('matches vendor with extra spaces and case differences', () => {
+    expect(appearsIn('Welcome to  SPINNEYS  store', 'vendor', 'spinneys')).toBe(true);
+    expect(appearsIn('Welcome to SPINNEYS', 'vendor', '  Spinneys  ')).toBe(true);
+  });
 });
 
 describe('fuse', () => {
@@ -83,5 +91,13 @@ describe('fuse', () => {
     const r = fuse(bad, bad, null);
     expect(r.arithmeticOk).toBe(false);
     expect(r.confidence).toBe('low');
+  });
+
+  it('Arabic vendor: markdown disambiguates between substring and full name', () => {
+    const a = x({ vendor: 'سبينس', subtotal: null, vat: null, total: null });
+    const b = x({ vendor: 'سبينسز', subtotal: null, vat: null, total: null });
+    const r = fuse(a, b, 'Welcome to سبينسز store');
+    expect(r.fields.vendor.value).toBe('سبينسز');
+    expect(r.fields.vendor.agreement).toBe('resolved');
   });
 });
