@@ -46,3 +46,4 @@ next-env.d.ts
 samples/photos/
 public/qr/
 !.env.example
+.mcp.json
