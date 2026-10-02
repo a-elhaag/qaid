@@ -12,7 +12,8 @@ Date: 2026-10-02. Source of intent: `idea.md`. Rule above all: **Qaid prepares, 
 | Auth | Supabase Auth, email + password, accountants only (clients keep token links, no login). Each user belongs to an office via `office_members`. A visible demo account (Ahmed) lets judges in with one tap. |
 | Jobs | `jobs` table in Postgres, run by `after()`, retried by Vercel Cron sweep |
 | Document reading | Azure AI Foundry: Cohere Parse v5 (image to Markdown + bounding boxes), then GPT-6 structured output (Markdown to JSON) |
-| Extraction, categorising, chat, drafting | GPT-6 family on Foundry (gpt-6-astra, gpt-6-luna, gpt-6-sol, gpt-6.1-sol; all support structured outputs). Model name per job in one config file. Cost is not a constraint (user decision): gpt-6-astra for every job. Set low reasoning effort on extraction for demo latency. Variant names deployed in the user's Foundry project are unverified, pin them in config at setup. |
+| Extraction, categorising | `gpt-6.1-sol` on Foundry (vision + structured outputs verified live, faster than Astra: 2.4s vs 3.5s). Env `AZURE_OPENAI_DEPLOYMENT_EXTRACT`. |
+| Agent chat, Arabic drafting | `gpt-6-astra` on Foundry. Env `AZURE_OPENAI_DEPLOYMENT_CHAT`. Cost is not a constraint (user decision). Low reasoning effort on extraction. |
 | Export | PDF (react-pdf) and Excel (exceljs) |
 | Language | Arabic RTL native, English supported, EGP only |
 
