@@ -1,27 +1,52 @@
 @import "tailwindcss";
 
+/* Banknote engraving: see .impeccable/language/index.html */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --accent: #0f766e;
+  --note: #0d4a43;
+  --note-deep: #082f2b;
+  --foil: #c8a24a;
+  --paper: #f1ead6;
+  --paper-hi: #f8f3e4;
+  --ink: #16201e;
+  --ink-soft: #4b5b57;
+  --rule: #b9c4b4;
+  --void: #7a1f2b;
+  --r: 18px;
+  --r-sm: 10px;
+  --disp: var(--f-disp), var(--f-kufi), serif;
+  --ui: var(--f-ui), var(--f-taj), system-ui, sans-serif;
+  --mono: var(--f-mono), ui-monospace, monospace;
+}
+[dir="rtl"] {
+  --disp: var(--f-kufi), var(--f-disp), serif;
+  --ui: var(--f-taj), var(--f-ui), system-ui, sans-serif;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-note: var(--note);
+  --color-note-deep: var(--note-deep);
+  --color-foil: var(--foil);
+  --color-paper: var(--paper);
+  --color-paper-hi: var(--paper-hi);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-rule: var(--rule);
+  --color-void: var(--void);
+  --font-disp: var(--disp);
+  --font-sans: var(--ui);
+  --font-mono: var(--mono);
+  --radius-card: var(--r);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--ui);
+  font-variant-numeric: tabular-nums;
+  background-color: var(--paper);
+  background-image: radial-gradient(ellipse at 15% 0, #fffaf0 0, transparent 55%), radial-gradient(ellipse at 100% 100%, #e6ecd9 0, transparent 50%);
 }
+::selection { background: var(--foil); color: var(--note-deep); }
+:focus-visible { outline: 2px solid var(--foil); outline-offset: 3px; }
+input::placeholder { color: var(--ink-soft); opacity: 0.7; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
