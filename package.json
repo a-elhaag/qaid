@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "seed": "tsx scripts/seed.ts",
-    "score": "tsx scripts/score-extraction.ts",
+    "seed": "tsx --env-file=.env.local scripts/seed.ts",
+    "score": "tsx --env-file=.env.local scripts/score-extraction.ts",
     "smoke:ai": "tsx scripts/smoke-ai.ts"
   },
   "dependencies": {

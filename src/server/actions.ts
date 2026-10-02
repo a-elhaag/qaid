@@ -36,7 +36,8 @@ export async function confirmEntries(rawIds: string[]) {
   const skipped = ids.filter((i) => !ok.some((e) => e.id === i));
   if (ok.length) {
     await db().from('entries').update({ confirmed: true }).in('id', ok.map((e) => e.id));
-    await db().from('documents').update({ status: 'confirmed' }).in('id', ok.map((e) => e.document_id).filter(Boolean));
+    const docIds = ok.map((e) => e.document_id).filter(Boolean);
+    if (docIds.length) await db().from('documents').update({ status: 'confirmed' }).in('id', docIds);
     // Closing a flag on confirm is the accountant's decision: confirming means "I looked at it".
     await db().from('flags').update({ open: false }).in('entry_id', ok.map((e) => e.id));
   }

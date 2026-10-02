@@ -1,0 +1,12 @@
+[
+  { "file": "01", "vendor": "Spinneys", "date": "2026-10-05", "subtotal": 100, "vat": 14, "total": 114, "docType": "purchase" },
+  { "file": "02", "vendor": "مورد الأدوات المنزلية", "date": "2026-10-04", "subtotal": 4360, "vat": 610.4, "total": 4970.4, "docType": "purchase" },
+  { "file": "03", "vendor": "المالك", "date": "2026-10-01", "subtotal": 1500, "vat": 0, "total": 1500, "docType": "purchase" },
+  { "file": "04", "vendor": "مورد البن", "date": "2026-10-03", "subtotal": 1800, "vat": 252, "total": 2052, "docType": "purchase" },
+  { "file": "05", "vendor": "Gulf Supplies", "date": "2026-10-06", "subtotal": 250, "vat": 35, "total": 285, "docType": "purchase" },
+  { "file": "06", "vendor": "كافيه النيل", "date": "2026-10-06", "subtotal": 80, "vat": 11.2, "total": 91.2, "docType": "sale" },
+  { "file": "07", "vendor": "مستورد الإكسسوارات", "date": "2026-10-06", "subtotal": 2000, "vat": 280, "total": 2280, "docType": "purchase" },
+  { "file": "08", "vendor": "مورد الألومنيوم", "date": "2026-10-07", "subtotal": 20000, "vat": 2800, "total": 22800, "docType": "purchase" },
+  { "file": "09", "vendor": "Vodafone Egypt", "date": "2026-10-02", "subtotal": 300, "vat": 42, "total": 342, "docType": "purchase" },
+  { "file": "10", "vendor": "محل الحاج علي", "date": "2026-10-08", "subtotal": null, "vat": null, "total": 120, "docType": "purchase" }
+]
