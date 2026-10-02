@@ -17,6 +17,7 @@ export async function signUp(form: FormData) {
   if (!email || password.length < 8) redirect('/login?error=2');
   const sb = await supabaseServer();
   const { data, error } = await sb.auth.signUp({ email, password });
+  if (error?.code === 'user_already_exists' || /already registered/i.test(error?.message ?? '')) redirect('/login?error=3');
   if (error || !data.user) redirect('/login?error=2');
   const { data: office } = await db().from('offices').insert({ name: email }).select('id').single();
   await db().from('office_members').insert({ user_id: data.user.id, office_id: office!.id });

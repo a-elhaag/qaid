@@ -12,7 +12,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
   const sp = await searchParams;
   const { t } = await getDict();
   const l = t.login;
-  const err = sp.error === '1' ? l.bad : sp.error === '2' ? l.badSignup : sp.error === 'nooffice' ? l.noOffice : sp.error ? '!' : '';
+  const err = sp.error === '1' ? l.bad : sp.error === '2' ? l.badSignup : sp.error === '3' ? l.exists : sp.error === 'nooffice' ? l.noOffice : sp.error ? '!' : '';
   const next = <input type="hidden" name="next" value={sp.next ?? ''} />;
 
   return (
