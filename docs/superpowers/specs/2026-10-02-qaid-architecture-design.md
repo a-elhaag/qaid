@@ -12,12 +12,16 @@ Date: 2026-10-02. Source of intent: `idea.md`. Rule above all: **Qaid prepares, 
 | Auth | Supabase Auth, email + password, accountants only (clients keep token links, no login). Each user belongs to an office via `office_members`. A visible demo account (Ahmed) lets judges in with one tap. |
 | Jobs | `jobs` table in Postgres, run by `after()`, retried by Vercel Cron sweep |
 | Document reading | Azure AI Foundry: Cohere Parse v5 (image to Markdown + bounding boxes), then GPT-6 structured output (Markdown to JSON) |
-| Extraction, categorising | `gpt-6.1-sol` on Foundry (vision + structured outputs verified live, faster than Astra: 2.4s vs 3.5s). Env `AZURE_OPENAI_DEPLOYMENT_EXTRACT`. |
-| Agent chat, Arabic drafting | `gpt-6-astra` on Foundry. Env `AZURE_OPENAI_DEPLOYMENT_CHAT`. Cost is not a constraint (user decision). Low reasoning effort on extraction. |
+| Extraction, categorising | `gpt-6.1-sol` on Foundry (vision + structured outputs verified live, faster than Astra: 2.4s vs 3.5s). Chosen by the model router (`src/server/models.ts`). |
+| Agent chat, Arabic drafting | `gpt-6-astra` on Foundry. Chosen by the model router. Cost is not a constraint (user decision). Low reasoning effort on extraction. |
 | Export | PDF (react-pdf) and Excel (exceljs) |
 | Language | Arabic RTL native, English supported, EGP only |
 
 Parser decision: **fusion**. Cohere Parse v5 and GPT-6 vision both read every receipt, in parallel, and `brain/extract/fuse` reconciles them with plain code (section 4a). Unverified: no public benchmark covers Arabic phone-photo receipts for either reader. Day-1 check on the ten sample receipts scoring each lane alone and fused (vendor, date, total, VAT). If one lane is useless, config turns fusion off and the other lane runs alone. Other parsers (Mistral Document AI, Azure Document Intelligence, jina-ocr-v1) only if both fail. Jev (TypeSafe) skipped for now; categorisation sits behind a `categorise()` interface so it can be added later.
+
+## 1a. Model router
+
+One file, `src/server/models.ts`, is the only place that knows models, hosts and the key. It reads two env vars (`FOUNDRY_RESOURCE`, `FOUNDRY_API_KEY`; one Foundry resource serves everything) and maps each job to a model: `extract` and `categorise` to `gpt-6.1-sol`, `chat` and `draft` to `gpt-6-astra`, `parse` to `cohere-parse-v5`. Hosts are derived from the resource name: `https://<resource>.openai.azure.com/openai/v1/` for GPT-6 and `https://<resource>.services.ai.azure.com/providers/cohere/v2/parse` for Parse. Optional env overrides `MODEL_EXTRACT`, `MODEL_CHAT`, `MODEL_PARSE`. Swapping a model, a provider or the whole router later touches this file only.
 
 ## 2. Structure
 
