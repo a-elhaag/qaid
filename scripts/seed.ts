@@ -9,8 +9,8 @@ const row = (m: string, day: number, vendor: string, subtotal: number, category:
   const vat = Math.round(subtotal * vatRate * 100) / 100;
   return { vendor, entry_date: d(m, day), subtotal, vat, total: Math.round((subtotal + vat) * 100) / 100, category, confirmed: true };
 };
-const must = <T>(r: { data: T | null; error: { message: string } | null }, what: string): T => {
-  if (r.error || r.data === null) throw new Error(`${what}: ${r.error?.message ?? 'no data'}`);
+const must = <T>(r: { data: T; error: { message: string } | null }, what: string): NonNullable<T> => {
+  if (r.error || r.data == null) throw new Error(`${what}: ${r.error?.message ?? 'no data'}`);
   return r.data;
 };
 
