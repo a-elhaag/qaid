@@ -15,6 +15,7 @@
   "dependencies": {
     "@openai/agents": "^0.18.0",
     "@react-pdf/renderer": "^4.9.0",
+    "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.2",
     "cohere-ai": "^8.1.0",
     "exceljs": "^4.4.0",
