@@ -15,8 +15,15 @@ export function findDuplicates(entry: Entry, others: Entry[]): Flag[] {
 }
 
 export function findPriceJump(entry: Entry, history: Entry[]): Flag | null {
-  if (!history.length) return null;
-  const avg = history.reduce((s, h) => s + h.total, 0) / history.length;
+  const filtered = history.filter(
+    (h) =>
+      h.clientId === entry.clientId &&
+      h.id !== entry.id &&
+      key(h.vendor) === key(entry.vendor) &&
+      h.date < entry.date
+  );
+  if (!filtered.length) return null;
+  const avg = filtered.reduce((s, h) => s + h.total, 0) / filtered.length;
   if (avg <= 0) return null;
   const pct = (entry.total - avg) / avg;
   if (pct < THRESHOLDS.priceJump) return null;
