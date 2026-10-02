@@ -35,39 +35,51 @@ describe('findPriceJump', () => {
   it('no history: no flag, no crash', () => {
     expect(findPriceJump(e({ id: 'n' }), [])).toBeNull();
   });
-  it('filters out foreign-client entries that would pollute average', () => {
-    // Foreign client with cheap entries (would lower average and hide a price jump)
+  it('filters out foreign-client entries: unfiltered avg 200 hides jump, filtered avg 100 flags it', () => {
+    // 109 vs [100] = 9% (flags); 109 vs [100, 300 (c2)] = avg 200 = -45% (no flag)
     const mixedHist = [
       e({ id: 'h1', date: '2026-08-05', total: 100, clientId: 'c1' }),
-      e({ id: 'h2', date: '2026-09-05', total: 50, clientId: 'c2' }), // foreign, cheap
+      e({ id: 'h2', date: '2026-09-05', total: 300, clientId: 'c2' }), // foreign client pollutes avg
     ];
-    // 101 is 1% rise vs [100] alone, but 1% vs [100, 50]=75 would not flag
     const f = findPriceJump(e({ id: 'n', clientId: 'c1', total: 109 }), mixedHist);
-    expect(f?.kind).toBe('price_jump'); // Must flag; filters out c2's cheap entry
+    expect(f?.kind).toBe('price_jump'); // filters out c2, avg=100, 109 is 9% rise
   });
-  it('ignores history entry with same id as current entry', () => {
-    const mixedHist = [
-      e({ id: 'same', date: '2026-08-05', total: 100 }),
-      e({ id: 'h2', date: '2026-09-05', total: 100 }),
+  it('filters out same-id entries: unfiltered avg 200 hides jump, filtered avg 100 flags it', () => {
+    // 109 vs [100] = 9% (flags); 109 vs [300 with id='n', 100 with id='h2'] = avg 200 = -45% (no flag)
+    const hist = [
+      e({ id: 'n', date: '2026-08-05', total: 300 }), // same id, pollutes avg
+      e({ id: 'h2', date: '2026-09-05', total: 100 }), // valid history entry
     ];
-    const f = findPriceJump(e({ id: 'same', total: 109 }), mixedHist);
-    expect(f?.kind).toBe('price_jump'); // Filters out the entry itself
+    const f = findPriceJump(e({ id: 'n', date: '2026-10-05', total: 109 }), hist);
+    expect(f?.kind).toBe('price_jump'); // filters out id='n' (300), avg=100 from h2, 109 is 9% rise
   });
-  it('ignores history for different vendor', () => {
+  it('filters out different-vendor entries: unfiltered avg 200 hides jump, filtered avg 100 flags it', () => {
+    // 109 vs [100 Gulf Supplies] = 9% (flags); 109 vs [100, 300 Other Vendor] = avg 200 = -45% (no flag)
     const mixedHist = [
       e({ id: 'h1', date: '2026-08-05', total: 100, vendor: 'Gulf Supplies' }),
-      e({ id: 'h2', date: '2026-09-05', total: 50, vendor: 'Other Vendor' }),
+      e({ id: 'h2', date: '2026-09-05', total: 300, vendor: 'Other Vendor' }),
     ];
     const f = findPriceJump(e({ id: 'n', vendor: 'Gulf Supplies', total: 109 }), mixedHist);
-    expect(f?.kind).toBe('price_jump'); // 109 is 9% vs [100], flags correctly
+    expect(f?.kind).toBe('price_jump'); // filters out Other Vendor, avg=100, 109 is 9% rise
   });
-  it('ignores later-dated history entries', () => {
+  it('filters out later-dated history entries: unfiltered avg 200 hides jump, filtered avg 100 flags it', () => {
+    // 109 vs [100] = 9% (flags); 109 vs [100, 300 later-dated] = avg 200 = -45% (no flag)
     const mixedHist = [
       e({ id: 'h1', date: '2026-08-05', total: 100 }),
-      e({ id: 'h2', date: '2026-10-10', total: 200 }), // later than entry
+      e({ id: 'h2', date: '2026-10-10', total: 300 }), // later than entry date 2026-10-05
     ];
     const f = findPriceJump(e({ id: 'n', date: '2026-10-05', total: 109 }), mixedHist);
-    expect(f?.kind).toBe('price_jump'); // 109 is 9% vs [100], flags correctly
+    expect(f?.kind).toBe('price_jump'); // filters out later-dated, avg=100, 109 is 9% rise
+  });
+  it('all entries filtered out: no division by zero, returns null', () => {
+    // History only has foreign-client, different-vendor, and later-dated entries
+    const allFilteredHist = [
+      e({ id: 'h1', date: '2026-08-05', total: 100, clientId: 'c2' }), // foreign
+      e({ id: 'h2', date: '2026-09-05', total: 100, vendor: 'Other Vendor' }), // different vendor
+      e({ id: 'h3', date: '2026-10-10', total: 100 }), // later-dated
+    ];
+    const f = findPriceJump(e({ id: 'n', clientId: 'c1', vendor: 'Gulf Supplies', date: '2026-10-05', total: 109 }), allFilteredHist);
+    expect(f).toBeNull(); // all filtered, no crash
   });
 });
 
