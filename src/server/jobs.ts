@@ -3,6 +3,8 @@ export interface JobStore {
   claim(): Promise<Job | null>;
   complete(id: string): Promise<void>;
   fail(id: string, error: string, retryAt: Date | null): Promise<void>;
+  /** When the earliest waiting retry is due, or null if none. Optional so simple stores can skip it. */
+  nextRetryAt?(): Promise<Date | null>;
 }
 export type Handlers = Record<string, (payload: Record<string, unknown>) => Promise<void>>;
 interface Opts { maxAttempts?: number; onDead?: (job: Job, error: string) => Promise<void> }
@@ -32,4 +34,16 @@ export async function drain(store: JobStore, handlers: Handlers, opts: Opts & { 
   let n = 0;
   while (n < (opts.limit ?? 10) && (await runNext(store, handlers, opts))) n++;
   return n;
+}
+
+/** Drains, then waits for retries due within budgetMs and drains again, so failures reach `dead` without a cron. */
+export async function drainWithRetries(store: JobStore, handlers: Handlers, opts: Opts & { limit?: number; budgetMs?: number } = {}): Promise<number> {
+  const end = Date.now() + (opts.budgetMs ?? 45_000);
+  let n = 0;
+  for (;;) {
+    n += await drain(store, handlers, opts);
+    const next = await store.nextRetryAt?.();
+    if (!next || next.getTime() > end) return n;
+    await new Promise((r) => setTimeout(r, Math.max(0, next.getTime() - Date.now())));
+  }
 }

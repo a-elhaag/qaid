@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { after, NextResponse } from 'next/server';
 import { db } from '@/server/db';
-import { drain } from '@/server/jobs';
+import { drainWithRetries } from '@/server/jobs';
 import { enqueue, supabaseJobStore } from '@/server/jobStore';
 import { handlers, onDead } from '@/server/processDocument';
 
@@ -34,6 +34,6 @@ export async function POST(req: Request) {
     await enqueue('process_document', { documentId: doc.id });
   }
 
-  after(() => drain(supabaseJobStore(), handlers, { limit: 5, onDead }));
+  after(() => drainWithRetries(supabaseJobStore(), handlers, { limit: 5, onDead }));
   return NextResponse.json({ ok: true, count: files.length });
 }

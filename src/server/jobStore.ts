@@ -16,6 +16,11 @@ export const supabaseJobStore = (): JobStore => ({
     if (error) throw error;
     return data?.id ? ({ id: data.id, type: data.type, payload: data.payload, attempts: data.attempts } as Job) : null;
   },
+  async nextRetryAt() {
+    const { data, error } = await db().from('jobs').select('run_at').eq('status', 'retry').order('run_at').limit(1).maybeSingle();
+    if (error) throw error;
+    return data ? new Date(data.run_at) : null;
+  },
   async complete(id) {
     must(await db().from('jobs').update({ status: 'done' }).eq('id', id));
   },

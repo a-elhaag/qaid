@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { drain, runNext, type Job, type JobStore } from './jobs';
+import { drain, drainWithRetries, runNext, type Job, type JobStore } from './jobs';
 
 function memStore(jobs: Job[]) {
   const log: string[] = [];
@@ -44,5 +44,30 @@ describe('drain', () => {
   it('runs until empty or limit', async () => {
     const { store } = memStore([job('a'), job('b'), job('c')]);
     expect(await drain(store, { t: async () => {} }, { limit: 2 })).toBe(2);
+  });
+});
+
+describe('drainWithRetries', () => {
+  // store where a failed job is re-queued at retryAt
+  function retryStore(maxAttempts: number) {
+    const q: { id: string; attempts: number; at: number }[] = [{ id: 'a', attempts: 0, at: 0 }];
+    const log: string[] = [];
+    const store: JobStore = {
+      async claim() { const j = q.find((x) => x.at <= Date.now()); if (!j) return null; q.splice(q.indexOf(j), 1); j.attempts += 1; return { id: j.id, type: 't', payload: {}, attempts: j.attempts }; },
+      async complete(id) { log.push(`done:${id}`); },
+      async fail(id, _e, retryAt) { log.push(retryAt ? `retry:${id}` : `dead:${id}`); if (retryAt) q.push({ id, attempts: log.filter((l) => l.startsWith('retry')).length, at: Date.now() + 10 }); },
+      async nextRetryAt() { return q.length ? new Date(Math.min(...q.map((x) => x.at))) : null; },
+    };
+    return { store, log, maxAttempts };
+  }
+  it('retries until dead without outside help', async () => {
+    const { store, log } = retryStore(3);
+    await drainWithRetries(store, { t: async () => { throw new Error('x'); } }, { maxAttempts: 3, budgetMs: 2000 });
+    expect(log).toEqual(['retry:a', 'retry:a', 'dead:a']);
+  });
+  it('stops when the next retry is beyond the budget', async () => {
+    const { store, log } = retryStore(3);
+    await drainWithRetries(store, { t: async () => { throw new Error('x'); } }, { maxAttempts: 3, budgetMs: 0 });
+    expect(log).toEqual(['retry:a']);
   });
 });
