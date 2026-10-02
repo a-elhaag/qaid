@@ -11,8 +11,12 @@ const co = new CohereClientV2({
   token: env('FOUNDRY_API_KEY'),
   environment: `https://${env('FOUNDRY_RESOURCE')}.services.ai.azure.com/providers/cohere`,
 });
-co.parse({
-  model: 'cohere-parse-v5',
-  document: { type: 'image_url', imageUrl: `data:image/jpeg;base64,${readFileSync(file).toString('base64')}` },
-  outputFormat: 'markdown',
-}).then((r) => console.log(JSON.stringify(r, null, 1).slice(0, 700)), (e: { statusCode?: number; message?: string }) => console.log('ERR', e.statusCode, String(e.message).slice(0, 300)));
+async function main() {
+  const r = await co.parse({
+    model: 'cohere-parse-v5',
+    document: { type: 'image_url', imageUrl: `data:image/jpeg;base64,${readFileSync(file).toString('base64')}` },
+    outputFormat: 'markdown',
+  });
+  console.log(JSON.stringify(r, null, 1).slice(0, 700));
+}
+main().catch((e: { statusCode?: number; message?: string }) => console.log('ERR', e.statusCode, String(e.message).slice(0, 300)));
