@@ -11,7 +11,7 @@ Date: 2026-10-02. Source of intent: `idea.md`. Rule above all: **Qaid prepares, 
 | Data | Supabase: Postgres, Storage (private bucket), Realtime |
 | Auth | Supabase Auth, email + password, accountants only (clients keep token links, no login). Each user belongs to an office via `office_members`. A visible demo account (Ahmed) lets judges in with one tap. |
 | Jobs | `jobs` table in Postgres, run by `after()`, retried by Vercel Cron sweep |
-| Document reading | Azure AI Foundry: Cohere Parse v5 (image to Markdown + bounding boxes), then GPT-6 structured output (Markdown to JSON) |
+| Document reading | Azure AI Foundry: Cohere Parse v5 via the `cohere-ai` SDK (image to Markdown), then GPT-6 structured output via the `openai` SDK (Markdown to JSON) |
 | Extraction, categorising | `gpt-6.1-sol` on Foundry (vision + structured outputs verified live, faster than Astra: 2.4s vs 3.5s). Chosen by the model router (`src/server/models.ts`). |
 | Agent chat, Arabic drafting | `gpt-6-astra` on Foundry. Chosen by the model router. Cost is not a constraint (user decision). Low reasoning effort on extraction. |
 | Export | PDF (react-pdf) and Excel (exceljs) |
@@ -96,7 +96,7 @@ Cost to manage: a document-scanner library (OpenCV.js based, for example jscanif
 
 **Chaser.** For `missing` or `silent`, OpenAI writes a polite Egyptian-Arabic message from the exact missing list (from SQL). Model writes wording only. Accountant copies or sends; Qaid never sends and never claims to.
 
-**Agent chat.** Chat panel on the board, one persistent thread per office, streaming. Tool-calling loop over deterministic code: `clients_without_uploads(month)`, `margin_change(client, month)`, `vat_by_client(month)`, `top_price_changes(client)`, plus action tool `draft_reminder(client)` which places the draft in chat. Rules: every answer states client and month; empty tool result gives "I don't have enough information"; answers cite the entries behind them; chat never files, sends, or confirms anything.
+**Agent chat.** Built with the OpenAI Agents SDK (`@openai/agents`) on the Responses API, tracing disabled. Chat panel on the board, one persistent thread per office, streaming. Tool-calling loop over deterministic code: `clients_without_uploads(month)`, `margin_change(client, month)`, `vat_by_client(month)`, `top_price_changes(client)`, plus action tool `draft_reminder(client)` which places the draft in chat. Rules: every answer states client and month; empty tool result gives "I don't have enough information"; answers cite the entries behind them; chat never files, sends, or confirms anything.
 
 **Month-end pack.** `ledger/` computes P&L, VAT summary (output minus input), payroll sheet with social insurance. Rates and bounds live in one config file marked *to verify*: VAT 14%, employer 18.75%, employee 11%, wage bounds EGP 2,700 to 16,700, minimum wage 7,000.
 - PDF, stamped "prepared for accountant review".

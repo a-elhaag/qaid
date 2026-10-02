@@ -13,6 +13,7 @@
     "smoke:ai": "tsx scripts/smoke-ai.ts"
   },
   "dependencies": {
+    "@openai/agents": "^0.18.0",
     "@react-pdf/renderer": "^4.9.0",
     "@supabase/supabase-js": "^2.117.2",
     "cohere-ai": "^8.1.0",

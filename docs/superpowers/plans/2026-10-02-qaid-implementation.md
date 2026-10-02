@@ -19,12 +19,76 @@
 - Accountant pages and APIs require a Supabase Auth session and an `office_members` row. Every server query is scoped by the caller's `officeId` from `requireOffice()`; ids sent from the browser are never trusted. Client phone links (`/c/[token]`, `POST /api/upload`) stay token-based, upload-only, no login.
 - Currency is EGP only. Salary income tax is out of scope; social insurance only.
 - Rates are in ONE file, `src/brain/config.ts`, each marked `// to verify`: VAT 14%, employer 18.75%, employee 11%, insurable wage 2,700 to 16,700, minimum wage 7,000, VAT registration threshold 250,000.
-- Models: `gpt-6-astra` for every job (cost is not a constraint). Deployment name read from env `AZURE_OPENAI_DEPLOYMENT`. Low reasoning effort on extraction.
+- Models come only from the model router `src/server/models.ts` (Amendment A1). `gpt-6.1-sol` for extract and categorise, `gpt-6-astra` for chat and draft, `cohere-parse-v5` for parse. Cost is not a constraint. Low reasoning effort on extraction. The Agents SDK and every AI SDK live in `src/server/` only, never in `brain/`.
 - `brain/` imports nothing from `next`, `react` (except `brain/export/pack.tsx`), or `@supabase`. Only `server/` touches Supabase and AI keys.
 - Arabic is the default UI language, RTL (`dir="rtl"`), English via cookie toggle. No emoji in UI. Calm, white, one accent colour.
 - All demo data is invented and labelled so. No real customer data in the repo.
 - Every commit message ends with the trailer `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
 - Build window Oct 1 to 3, 2026. Commit normally, never backdate.
+
+## Amendments (2026-10-02, after Azure and Supabase were set up and tested live; these OVERRIDE the task text below where they conflict)
+
+Verified facts: see `docs/notes/parse-api.md`, `scripts/smoke-parse.ts`, `scripts/smoke-agent.ts`, `scripts/smoke-structured.ts`. Env is now: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (secret key `sb_secret_...`), `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (publishable key), `FOUNDRY_RESOURCE`, `FOUNDRY_API_KEY`, `FUSION`, `CRON_SECRET`, optional `MODEL_EXTRACT`/`MODEL_CHAT`/`MODEL_PARSE`.
+
+**A1. Model router (Task 6 `env.ts` and Task 7).** Replace the Task 6 `env.ts` getters for Azure/Cohere with `foundryResource` and `foundryKey` (from `FOUNDRY_RESOURCE`, `FOUNDRY_API_KEY`). Create `src/server/models.ts` test-first (`src/server/models.test.ts`):
+```ts
+export type JobKind = 'extract' | 'categorise' | 'chat' | 'draft' | 'parse';
+const req = (k: string) => { const v = process.env[k]; if (!v) throw new Error(`Missing env var ${k}`); return v; };
+
+export function route(job: JobKind) {
+  const resource = req('FOUNDRY_RESOURCE');
+  const model = {
+    extract: process.env.MODEL_EXTRACT ?? 'gpt-6.1-sol',
+    categorise: process.env.MODEL_EXTRACT ?? 'gpt-6.1-sol',
+    chat: process.env.MODEL_CHAT ?? 'gpt-6-astra',
+    draft: process.env.MODEL_CHAT ?? 'gpt-6-astra',
+    parse: process.env.MODEL_PARSE ?? 'cohere-parse-v5',
+  }[job];
+  return {
+    model,
+    apiKey: req('FOUNDRY_API_KEY'),
+    openaiBaseURL: `https://${resource}.openai.azure.com/openai/v1/`,
+    cohereBaseURL: `https://${resource}.services.ai.azure.com/providers/cohere`,
+  };
+}
+```
+Tests: default model per job; `MODEL_CHAT` override changes `chat` and `draft` only; missing `FOUNDRY_RESOURCE` throws; hosts contain the resource name.
+
+**A2. Parse uses the Cohere SDK (Task 7 `parse.ts`).** `npm i cohere-ai` is already done. Implement per `docs/notes/parse-api.md`: `new CohereClientV2({ token: r.apiKey, environment: r.cohereBaseURL })` with `r = route('parse')`, `co.parse({ model: r.model, document: { type: 'image_url', imageUrl: dataUri }, outputFormat: 'markdown' })`, return `pages.map(p => p.markdown.content).join('\n')`, throw if empty. `parseToMarkdown(b64, mime, client = defaultClient)` takes an injectable client so the unit test passes a fake `{ parse: async () => ({ pages: [...] }) }`.
+
+**A3. OpenAI SDK and Agents SDK (Tasks 5, 7, 15).**
+- Task 7 `ai.ts`: replace `AzureOpenAI`/`apiVersion` with the plain client `new OpenAI({ apiKey, baseURL: route('extract').openaiBaseURL })` (exported `openai()`). `structureReceipt` and `categorise` use `openai().chat.completions.create` with `model: route('extract').model`, `reasoning_effort: 'low'`, `response_format: json_schema` (verified with vision in `smoke-structured.ts`). Delete `gptLlm`. `chatText(messages: {role:'system'|'user'|'assistant'; content:string}[])` calls chat.completions with `route('draft').model` and no tools (used by the reminder).
+- Task 5: do NOT build `askLoop` or `loop.test.ts`. Create `src/brain/ask/prompt.ts` exporting `ASK_SYSTEM_PROMPT` (same text as the plan's) and keep `reminder.ts` and its test, with its own `type ChatMsg = { role: 'system' | 'user' | 'assistant'; content: string }` in place of `Msg`.
+- Task 15: the agent is built with `@openai/agents` (installed). Create `src/server/agent.ts`:
+```ts
+import { Agent, run, setDefaultOpenAIClient, setTracingDisabled } from '@openai/agents';
+import { ASK_SYSTEM_PROMPT } from '@/brain/ask/prompt';
+import { openai } from './ai';
+import { route } from './models';
+import { buildTools } from './askTools';
+import { monthKey } from './queries';
+
+let ready = false;
+function setup() {
+  if (ready) return;
+  setTracingDisabled(true); // no traces to the OpenAI platform
+  setDefaultOpenAIClient(openai('chat')); // Responses API is the default and is what GPT-6 needs for tools
+  ready = true;
+}
+
+export async function askAgent(officeId: string, messages: { role: 'user' | 'assistant'; content: string }[]) {
+  setup();
+  const agent = new Agent({
+    name: 'Qaid',
+    model: route('chat').model,
+    instructions: `${ASK_SYSTEM_PROMPT}\nCurrent month: ${monthKey(new Date())}.`,
+    tools: buildTools(officeId),
+  });
+  const r = await run(agent, messages);
+  return String(r.finalOutput ?? '');
+}
+```
+(`openai(job)` takes a job kind so the chat client could be pointed at its own base URL; both use the same host today.) `askTools.ts` defines each tool with `tool({ name, description, parameters: z.object({...}), execute })` from `@openai/agents` and `zod`, calling the same deterministic code as in the plan; `resolveClient` and its test are unchanged. `src/app/api/chat/route.ts` calls `askAgent(officeId, messages)` and returns `{ answer }`. Chat Completions must NOT be used for tools (GPT-6 rejects tools with reasoning effort there). Streaming (spec) is a stretch: `run(agent, input, { stream: true })` then `toTextStream()`.
 
 ## Deviations from the spec (cut or simplified, on purpose)
 
