@@ -15,3 +15,13 @@ Body: `{"model":"cohere-parse-v5","document":{"type":"image_url","image_url":"da
 Accepted images: PNG, JPEG, WebP, GIF only. PDFs and document_url are rejected (400).
 Response 200: `{"id":..., "pages":[{"index":0,"type":"markdown","markdown":{"content":"<html table markup>"}}], "meta":{"billed_units":{"pages":1}}}`
 Markdown content arrives as HTML table markup (`<table><tr><td>..`), fine as LLM input. Take text from `pages[*].markdown.content`, join pages with newlines.
+
+## Parse via the Cohere SDK (verified live, used in code)
+`npm i cohere-ai` (v8). Auth is Bearer with the account key; `environment` is the Foundry provider base.
+```ts
+import { CohereClientV2 } from 'cohere-ai';
+const co = new CohereClientV2({ token: FOUNDRY_API_KEY, environment: `https://${FOUNDRY_RESOURCE}.services.ai.azure.com/providers/cohere` });
+const r = await co.parse({ model: 'cohere-parse-v5', document: { type: 'image_url', imageUrl: `data:image/jpeg;base64,${b64}` }, outputFormat: 'markdown' });
+const markdown = r.pages.map((p) => p.markdown.content).join('\n'); // ParseResponse.pages[].markdown.content
+```
+Smoke test: `npx tsx scripts/smoke-parse.ts <image.jpg>`.
