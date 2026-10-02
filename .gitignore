@@ -47,3 +47,4 @@ samples/photos/
 public/qr/
 !.env.example
 .mcp.json
+.claude/settings.json
