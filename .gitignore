@@ -1,0 +1,6 @@
+.superpowers/
+.env
+.env.local
+.env*.local
+samples/photos/
+public/qr/
