@@ -22,6 +22,17 @@ const en = {
     check: 'Check your email to confirm the account.',
     seal: 'PREPARED · YOU DECIDE · PREPARED · YOU DECIDE ·',
   },
+  board: {
+    title: 'Client ledger',
+    toReview: 'receipts to review',
+    cols: { no: 'No.', client: 'Client', review: 'To review', flags: 'Flags', missing: 'Missing', status: 'Status' },
+    status: { strange: 'Needs you', missing: 'Documents missing', silent: 'Gone quiet', review: 'Awaiting review', ready: 'Clear' },
+    empty: 'No clients yet. Add the first one below; each gets a private upload link.',
+    addName: 'Client name',
+    add: 'Add client',
+    signOut: 'Sign out',
+    synthetic: 'Demo data is invented',
+  },
 };
 
 const ar: typeof en = {
@@ -43,6 +54,17 @@ const ar: typeof en = {
     noOffice: 'هذا الحساب غير مرتبط بمكتب.',
     check: 'تحقق من بريدك لتأكيد الحساب.',
     seal: 'جاهز · وأنت تقرر · جاهز · وأنت تقرر ·',
+  },
+  board: {
+    title: 'دفتر العملاء',
+    toReview: 'إيصالًا بانتظار المراجعة',
+    cols: { no: 'رقم', client: 'العميل', review: 'للمراجعة', flags: 'تنبيهات', missing: 'ناقص', status: 'الحالة' },
+    status: { strange: 'يحتاجك', missing: 'مستندات ناقصة', silent: 'صامت', review: 'بانتظار المراجعة', ready: 'سليم' },
+    empty: 'لا عملاء بعد. أضف أول عميل بالأسفل، ولكل عميل رابط رفع خاص.',
+    addName: 'اسم العميل',
+    add: 'إضافة عميل',
+    signOut: 'خروج',
+    synthetic: 'بيانات تجريبية مخترعة',
   },
 };
 

@@ -50,3 +50,15 @@ body {
 :focus-visible { outline: 2px solid var(--foil); outline-offset: 3px; }
 input::placeholder { color: var(--ink-soft); opacity: 0.7; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* split-flap cells */
+.flaps { display: inline-flex; gap: 3px; }
+.flap {
+  position: relative; display: inline-block; width: 22px; height: 34px; line-height: 34px; text-align: center;
+  background: var(--note-deep); color: var(--paper); font: 500 20px var(--mono); border-radius: 6px; overflow: hidden;
+  box-shadow: 0 1px 0 #fff2 inset, 0 1px 2px #0006;
+}
+.flap::after { content: ""; position: absolute; inset-inline: 0; top: 50%; height: 1px; background: #000a; box-shadow: 0 1px 0 #fff1; }
+.flap.hot { background: var(--foil); color: var(--note-deep); }
+.flap.go { animation: clack 0.38s cubic-bezier(0.2, 0.9, 0.2, 1); }
+@keyframes clack { 0% { transform: scaleY(1); } 35% { transform: scaleY(0.1); } 100% { transform: scaleY(1); } }
