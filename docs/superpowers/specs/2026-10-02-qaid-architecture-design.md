@@ -131,6 +131,6 @@ Tax authority submission, banks and wallets, WhatsApp, salary income tax, handwr
 
 ## 11. Open items
 
-- Real monthly fee per client in Egypt (needed for slides, ask a real accountant).
+- Real monthly fee per client in Egypt and real hours per client (needed for slides, ask a real accountant). Pricing and impact considerations, with verified Wafeq and salary figures and the break-even math: `docs/notes/pricing-and-impact.md`. Planned price anchor: EGP 50 per client per month.
 - Whether the winning agent must run on Wesam.ai (brain boundary keeps this cheap).
 - Re-verify all rates in section 6 before the demo.
