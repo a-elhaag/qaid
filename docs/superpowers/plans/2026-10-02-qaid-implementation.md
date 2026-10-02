@@ -21,7 +21,8 @@
 - Rates are in ONE file, `src/brain/config.ts`, each marked `// to verify`: VAT 14%, employer 18.75%, employee 11%, insurable wage 2,700 to 16,700, minimum wage 7,000, VAT registration threshold 250,000.
 - Models come only from the model router `src/server/models.ts` (Amendment A1). `gpt-6.1-sol` for extract and categorise, `gpt-6-astra` for chat and draft, `cohere-parse-v5` for parse. Cost is not a constraint. Low reasoning effort on extraction. The Agents SDK and every AI SDK live in `src/server/` only, never in `brain/`.
 - `brain/` imports nothing from `next`, `react` (except `brain/export/pack.tsx`), or `@supabase`. Only `server/` touches Supabase and AI keys.
-- Arabic is the default UI language, RTL (`dir="rtl"`), English via cookie toggle. No emoji in UI. Calm, white, one accent colour.
+- **UI language (user decision 2026-10-02, overrides older text):** English is the default UI language (LTR). Arabic is an opt-in via a cookie toggle (RTL, `dir="rtl"` when selected). All UI strings go through one dictionary so both languages exist. No emoji in UI.
+- **No UI work until the design is chosen together with the user (user decision 2026-10-02).** Tasks 9, 11, 12, 15, 17, 18 and any page or component: build server/API/logic only, then STOP and run a design session (use the design skills) before writing pages. Existing `src/app/login/page.tsx` is a throwaway placeholder with hardcoded Arabic; replace it in the design pass. Any plan text below that says Arabic default, RTL layout or specific Tailwind styling is superseded.
 - All demo data is invented and labelled so. No real customer data in the repo.
 - Every commit message ends with the trailer `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
 - Build window Oct 1 to 3, 2026. Commit normally, never backdate.
