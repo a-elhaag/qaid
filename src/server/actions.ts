@@ -1,12 +1,15 @@
 'use server';
 import { revalidatePath } from 'next/cache';
 import { after } from 'next/server';
+import { buildReminderMessages } from '@/brain/draft/reminder';
+import { chatText } from './ai';
 import { requireOffice } from './auth';
 import { db } from './db';
 import { canConfirm, cleanPatch } from './entryRules';
 import { drainWithRetries } from './jobs';
 import { enqueue, supabaseJobStore } from './jobStore';
 import { handlers, onDead } from './processDocument';
+import { loadBoard, monthKey } from './queries';
 
 /** Entry ids that belong to the caller's office. Browser-sent ids are never trusted. */
 async function ownedEntryIds(officeId: string, ids: string[]): Promise<string[]> {
@@ -49,4 +52,14 @@ export async function retryDocument(documentId: string) {
   await enqueue('process_document', { documentId });
   after(() => drainWithRetries(supabaseJobStore(), handlers, { limit: 1, onDead }));
   revalidatePath('/board', 'layout');
+}
+
+/** Arabic reminder draft listing only what is missing. Empty string means nothing is missing. */
+export async function draftReminderAction(clientId: string): Promise<string> {
+  const { officeId } = await requireOffice();
+  const row = (await loadBoard(officeId)).find((r) => r.id === clientId); // office-scoped: another office's id finds nothing
+  if (!row) return '';
+  const missing = row.counts.missing.length ? row.counts.missing : row.status === 'silent' ? ['إيصالات هذا الشهر'] : [];
+  if (!missing.length) return '';
+  return chatText(buildReminderMessages({ clientName: row.name, month: monthKey(new Date()), missing }));
 }

@@ -5,7 +5,9 @@ import { LangToggle } from '@/components/LangToggle';
 import { getDict } from '@/i18n/server';
 import { requireOffice } from '@/server/auth';
 import { db } from '@/server/db';
+import { loadBoard } from '@/server/queries';
 import { LiveRefresh } from '../LiveRefresh';
+import { Reminder } from './Reminder';
 import { ReviewTable, type ReviewRow } from './ReviewTable';
 
 export const dynamic = 'force-dynamic';
@@ -46,6 +48,7 @@ export default async function ClientDetail({ params }: { params: Promise<{ clien
     }),
   );
   const nf = new Intl.NumberFormat(lang === 'ar' ? 'ar-EG' : 'en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const board = (await loadBoard(officeId)).find((b) => b.id === clientId);
   const failed = (docs ?? []).filter((d) => d.status === 'failed');
 
   return (
@@ -62,6 +65,8 @@ export default async function ClientDetail({ params }: { params: Promise<{ clien
           <LangToggle className="text-foil hover:bg-foil hover:text-note-deep" />
         </div>
       </header>
+
+      <Reminder clientId={client.id} show={board?.status === 'missing' || board?.status === 'silent'} missing={board?.counts.missing ?? []} t={r} />
 
       <h2 className="font-disp text-2xl font-bold text-note">{r.toReview}</h2>
       {rows.length === 0 && failed.length === 0 && <p className="text-ink-soft">{r.nothing}</p>}
