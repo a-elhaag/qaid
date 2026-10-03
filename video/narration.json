@@ -1,0 +1,14 @@
+[
+ {"id":"intro","text":"Small businesses in Egypt run on paper receipts. Every one of them ends up on an accountant's desk, typed in by hand. Qaid reads them first."},
+ {"id":"stats","text":"Small businesses are ninety percent of Egypt's private sector, and forty-three percent of its economy. Typing one receipt by hand takes three to five minutes, and one to three percent come out wrong."},
+ {"id":"audience","text":"So we built Qaid for the accounting office. The owner keeps their accountant. The accountant simply gets a lot more done."},
+ {"id":"board","text":"This is the ledger: every client on one line. A red stamp means Qaid found something strange, like a price jump, a duplicate invoice, or a VAT spike."},
+ {"id":"phone","text":"A client opens a private link. No account, no app. They photograph a receipt, and the phone checks it for blur and glare before anything is sent."},
+ {"id":"pipeline","text":"Behind the scenes, two readers look at every receipt at the same time. One reads the layout, the other reads the image. A referee compares them field by field, and anything they disagree on is flagged, never quietly fixed."},
+ {"id":"review","text":"Seconds later the entry appears on the board, next to the original receipt. Qaid has flagged a nine percent price rise. The accountant checks it, and confirms. Only confirmed entries ever count."},
+ {"id":"chat","text":"The accountant can also just ask. Every number in the answer comes from the records, never from a guess, and the answer streams in as it is written."},
+ {"id":"reminder","text":"Missing a document? Qaid drafts the reminder in Arabic, ready to copy and send."},
+ {"id":"pack","text":"Month end is one click: Excel or PDF. And the whole app switches to Arabic, right to left."},
+ {"id":"results","text":"On ten test receipts, every subtotal, VAT and total was right, in a median of six and a half seconds. They were clean renders, so real photos will do worse, and we say so."},
+ {"id":"outro","text":"Qaid prepares. The accountant decides. It is live now. Try it."}
+]

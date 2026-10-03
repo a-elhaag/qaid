@@ -1,0 +1,46 @@
+{
+ "board": [
+  {
+   "file": "clips/board-0.mp4",
+   "seconds": 11.033333
+  }
+ ],
+ "phone": [
+  {
+   "file": "clips/phone-0.mp4",
+   "seconds": 10.4
+  }
+ ],
+ "review": [
+  {
+   "file": "clips/review-0.mp4",
+   "seconds": 14
+  }
+ ],
+ "chat": [
+  {
+   "file": "clips/chat-0.mp4",
+   "seconds": 4.3
+  },
+  {
+   "file": "clips/chat-1.mp4",
+   "seconds": 6.9
+  }
+ ],
+ "reminder": [
+  {
+   "file": "clips/reminder-0.mp4",
+   "seconds": 7.7
+  }
+ ],
+ "pack": [
+  {
+   "file": "clips/pack-0.mp4",
+   "seconds": 4
+  },
+  {
+   "file": "clips/pack-1.mp4",
+   "seconds": 3.8
+  }
+ ]
+}

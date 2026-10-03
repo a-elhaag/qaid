@@ -48,3 +48,12 @@ samples/photos/
 .mcp.json
 .claude/settings.json
 .impeccable/
+
+video/node_modules
+video/raw
+video/out
+video/public/clips
+video/public/*.webm
+video/public/audio
+video/audio
+docs/demo/*.mp4

@@ -1,0 +1,62 @@
+[
+ {
+  "id": "intro",
+  "text": "Small businesses in Egypt run on paper receipts. Every one of them ends up on an accountant's desk, typed in by hand. Qaid reads them first.",
+  "seconds": 9.744
+ },
+ {
+  "id": "stats",
+  "text": "Small businesses are ninety percent of Egypt's private sector, and forty-three percent of its economy. Typing one receipt by hand takes three to five minutes, and one to three percent come out wrong.",
+  "seconds": 12.456
+ },
+ {
+  "id": "audience",
+  "text": "So we built Qaid for the accounting office. The owner keeps their accountant. The accountant simply gets a lot more done.",
+  "seconds": 6.84
+ },
+ {
+  "id": "board",
+  "text": "This is the ledger: every client on one line. A red stamp means Qaid found something strange, like a price jump, a duplicate invoice, or a VAT spike.",
+  "seconds": 10.296
+ },
+ {
+  "id": "phone",
+  "text": "A client opens a private link. No account, no app. They photograph a receipt, and the phone checks it for blur and glare before anything is sent.",
+  "seconds": 9.6
+ },
+ {
+  "id": "pipeline",
+  "text": "Behind the scenes, two readers look at every receipt at the same time. One reads the layout, the other reads the image. A referee compares them field by field, and anything they disagree on is flagged, never quietly fixed.",
+  "seconds": 14.688
+ },
+ {
+  "id": "review",
+  "text": "Seconds later the entry appears on the board, next to the original receipt. Qaid has flagged a nine percent price rise. The accountant checks it, and confirms. Only confirmed entries ever count.",
+  "seconds": 12.864
+ },
+ {
+  "id": "chat",
+  "text": "The accountant can also just ask. Every number in the answer comes from the records, never from a guess, and the answer streams in as it is written.",
+  "seconds": 8.88
+ },
+ {
+  "id": "reminder",
+  "text": "Missing a document? Qaid drafts the reminder in Arabic, ready to copy and send.",
+  "seconds": 6
+ },
+ {
+  "id": "pack",
+  "text": "Month end is one click: Excel or PDF. And the whole app switches to Arabic, right to left.",
+  "seconds": 6.936
+ },
+ {
+  "id": "results",
+  "text": "On ten test receipts, every subtotal, VAT and total was right, in a median of six and a half seconds. They were clean renders, so real photos will do worse, and we say so.",
+  "seconds": 12.864
+ },
+ {
+  "id": "outro",
+  "text": "Qaid prepares. The accountant decides. It is live now. Try it.",
+  "seconds": 5.088
+ }
+]
