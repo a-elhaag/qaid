@@ -2,7 +2,7 @@
 import { useRef, useState, type ReactNode } from 'react';
 import type { Dict } from '@/i18n/dictionary';
 import type { Reason } from '@/brain/scan/quality';
-import { checkAndCrop } from './scan';
+import { checkAndCrop, splitReceipts } from './scan';
 
 type Props = { token: string; name: string; office: string; t: Dict['client']; lang: 'en' | 'ar'; art: ReactNode; toggle: ReactNode };
 
@@ -10,6 +10,7 @@ type Props = { token: string; name: string; office: string; t: Dict['client']; l
 export function Uploader({ token, name, office, t, art, toggle }: Props) {
   const input = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error' | 'retake'>('idle');
+  const [count, setCount] = useState(0);
   const [reason, setReason] = useState<Reason>('blurry');
   const done = state === 'done';
 
@@ -26,9 +27,10 @@ export function Uploader({ token, name, office, t, art, toggle }: Props) {
           if (input.current) input.current.value = '';
           return;
         }
-        form.append('file', r.blob, 'receipt.jpg');
+        for (const b of (await splitReceipts(f)) ?? [r.blob]) form.append('file', b, 'receipt.jpg');
       }
       const r = await fetch(`/api/upload?token=${token}`, { method: 'POST', body: form });
+      if (r.ok) setCount(((await r.json()) as { count: number }).count);
       setState(r.ok ? 'done' : 'error');
     } catch {
       setState('error');
@@ -54,7 +56,7 @@ export function Uploader({ token, name, office, t, art, toggle }: Props) {
         </div>
 
         <div className="relative flex flex-col items-center gap-6 py-10">
-          <input ref={input} type="file" accept="image/*" capture="environment" hidden onChange={(e) => onPick(e.target.files)} />
+          <input ref={input} type="file" accept="image/*" capture="environment" multiple hidden onChange={(e) => onPick(e.target.files)} />
           <button
             onClick={() => input.current?.click()}
             disabled={state === 'sending'}
@@ -70,6 +72,7 @@ export function Uploader({ token, name, office, t, art, toggle }: Props) {
               {state === 'sending' ? t.sending : done ? t.another : t.send}
             </span>
           </button>
+          {done && count > 1 && <p className="font-mono text-sm">{t.receiptsSent.replace('{n}', String(count))}</p>}
           {state === 'retake' && <p role="alert" className="max-w-[28ch] rounded-xl bg-foil px-4 py-3 text-center text-sm font-semibold text-note-deep">{t.retake[reason]}</p>}
           {state === 'error' && <p role="alert" className="max-w-[28ch] rounded-xl bg-void px-4 py-3 text-center text-sm text-paper">{t.error}</p>}
         </div>
