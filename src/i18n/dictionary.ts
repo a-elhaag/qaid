@@ -63,6 +63,15 @@ const en = {
     error: 'It did not send. Check your connection and try again.',
     invented: 'Demo data is invented',
   },
+  chat: {
+    title: 'Ask Qaid',
+    placeholder: 'Ask about your clients',
+    send: 'Send',
+    thinking: 'Checking the books',
+    error: 'Could not answer. Try again.',
+    note: 'Qaid prepares, you decide. Numbers come from the records.',
+    suggest: ['Who has not sent documents this month?', "Why did Mona's margin drop?", 'What VAT is payable for each client?'],
+  },
   board: {
     title: 'Client ledger',
     toReview: 'receipts to review',
@@ -72,6 +81,7 @@ const en = {
     addName: 'Client name',
     add: 'Add client',
     signOut: 'Sign out',
+    ask: 'Ask Qaid',
     synthetic: 'Demo data is invented',
   },
 };
@@ -137,6 +147,15 @@ const ar: typeof en = {
     error: 'لم يُرسل. تحقق من الاتصال وحاول مرة أخرى.',
     invented: 'بيانات تجريبية مخترعة',
   },
+  chat: {
+    title: 'اسأل قيد',
+    placeholder: 'اسأل عن عملائك',
+    send: 'إرسال',
+    thinking: 'أراجع الدفاتر',
+    error: 'تعذّر الرد. حاول مرة أخرى.',
+    note: 'قيد يحضّر وأنت تقرر. الأرقام تأتي من السجلات.',
+    suggest: ['من لم يرسل مستندات هذا الشهر؟', 'لماذا انخفض هامش ربح منى؟', 'ما ضريبة القيمة المضافة المستحقة لكل عميل؟'],
+  },
   board: {
     title: 'دفتر العملاء',
     toReview: 'إيصالًا بانتظار المراجعة',
@@ -146,6 +165,7 @@ const ar: typeof en = {
     addName: 'اسم العميل',
     add: 'إضافة عميل',
     signOut: 'خروج',
+    ask: 'اسأل قيد',
     synthetic: 'بيانات تجريبية مخترعة',
   },
 };

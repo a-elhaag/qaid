@@ -42,6 +42,7 @@ export default async function Board() {
               <Flaps value={flap(total)} hot />
               <p className="mt-1 text-xs text-paper/80">{b.toReview}</p>
             </div>
+            <Link href="/chat" className="rounded-full bg-foil px-4 py-2 text-sm font-semibold text-note-deep hover:bg-paper">{b.ask}</Link>
             <LangToggle className="text-foil hover:bg-foil hover:text-note-deep" />
             <form action={signOut}>
               <button className="rounded-full border border-paper/50 px-4 py-2 text-sm hover:border-foil hover:text-foil">{b.signOut}</button>
