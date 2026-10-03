@@ -1,6 +1,6 @@
 'use client';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { Dict } from '@/i18n/dictionary';
 import { endTour } from '@/server/tourActions';
 import { makeReceiptBlob } from './receipt';
@@ -13,6 +13,9 @@ type Info = { now: string; cafe: { id: string; token: string }; mona: { id: stri
 const SINCE_KEY = 'qaid-tour-since'; // lets a later page load clean up after a tour that was cut short
 const STEPS = 12;
 const STALE_MS = 6 * 60_000; // a tour takes about 3 minutes, so older marks belong to a tour that was cut short
+
+type Bubble = { left: number; top: number; tail: number; side: 'top' | 'bottom' | 'left' | 'right' | 'none' };
+const PAD = 10; // spotlight padding
 
 class Aborted extends Error {}
 const tick = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -39,6 +42,9 @@ export function TourHost({ t }: { t: T }) {
   const paused = useRef(false);
   const target = useRef<(() => Target) | null>(null);
   const frame = useRef<HTMLIFrameElement>(null);
+  const bubbleRef = useRef<HTMLDivElement>(null);
+  const phoneRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<Bubble | null>(null);
 
   const [on, setOn] = useState(false);
   const [caption, setCaption] = useState('');
@@ -301,9 +307,40 @@ export function TourHost({ t }: { t: T }) {
     setPhone(null);
   }
 
+  // place the speech bubble above what is being pointed at (below if there is no room, beside the phone preview)
+  useLayoutEffect(() => {
+    const el = bubbleRef.current;
+    if (!on || !el) return;
+    const w = el.offsetWidth;
+    const h = el.offsetHeight;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const gap = 18;
+    const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+    const ph = phoneShown ? phoneRef.current?.getBoundingClientRect() : null;
+    let next: Bubble;
+    if (ph && !spot) {
+      const onLeft = ph.left >= vw - ph.right;
+      next = {
+        left: clamp(onLeft ? ph.left - w - gap : ph.right + gap, 12, vw - w - 12),
+        top: clamp(ph.top + ph.height / 2 - h / 2, 12, vh - h - 12),
+        tail: 0,
+        side: onLeft ? 'right' : 'left',
+      };
+    } else if (spot) {
+      const cx = spot.x + spot.w / 2;
+      const left = clamp(cx - w / 2, 12, vw - w - 12);
+      const above = spot.y - PAD - gap - h;
+      const top = above >= 12 ? above : Math.min(spot.y + spot.h + PAD + gap, vh - h - 70);
+      next = { left, top, tail: clamp(cx - left, 28, w - 28), side: above >= 12 ? 'bottom' : 'top' };
+    } else {
+      next = { left: (vw - w) / 2, top: 20, tail: 0, side: 'none' };
+    }
+    setPos((p) => (p && p.left === next.left && p.top === next.top && p.tail === next.tail && p.side === next.side ? p : next));
+  }, [spot, phoneShown, caption, finale, on, live]);
+
   if (!on) return null;
-  const pad = 10;
-  const barOnTop = !!spot && spot.y + spot.h / 2 > window.innerHeight * 0.55; // keep the caption clear of what it points at
+  const pad = PAD;
   return (
     <>
       {spot && (
@@ -316,6 +353,7 @@ export function TourHost({ t }: { t: T }) {
 
       {phone && (
         <div
+          ref={phoneRef}
           aria-hidden
           className={`fixed end-4 top-1/2 z-[95] h-[580px] w-[290px] -translate-y-1/2 overflow-hidden rounded-[44px] border-8 border-ink bg-note shadow-[0_30px_60px_-20px_#000a] transition-all duration-700 sm:end-10 ${
             phoneShown ? 'scale-100 opacity-100' : 'pointer-events-none scale-90 opacity-0'
@@ -338,43 +376,56 @@ export function TourHost({ t }: { t: T }) {
       )}
 
       <div
+        ref={bubbleRef}
         role="status"
         aria-live="polite"
-        className={`fixed inset-x-3 ${barOnTop ? 'top-3' : 'bottom-3'} z-[100] mx-auto flex max-w-3xl flex-wrap items-center gap-x-4 gap-y-2 rounded-[22px] border border-foil bg-note-deep/95 px-5 py-4 text-paper shadow-[0_20px_40px_-12px_#000a] backdrop-blur`}
+        className={`fixed z-[100] w-[min(380px,calc(100vw-24px))] rounded-[20px] border border-foil bg-note-deep px-5 py-4 text-paper shadow-[0_20px_40px_-12px_#000a] transition-[left,top] duration-500 ease-out ${pos ? '' : 'invisible'}`}
+        style={{ left: pos?.left ?? 0, top: pos?.top ?? 0 }}
       >
-        {live && <span className="rounded-full bg-void px-2.5 py-1 font-mono text-[10px] font-semibold tracking-[.2em]">{t.live}</span>}
-        <p className="min-w-[14rem] flex-1 text-[15px] leading-snug">{caption}</p>
-        {finale ? (
-          <div className="flex gap-2">
+        {pos && pos.side !== 'none' && (
+          <span
+            aria-hidden
+            className={`absolute h-4 w-4 rotate-45 bg-note-deep ${
+              pos.side === 'bottom' ? '-bottom-2 border-b border-r' : pos.side === 'top' ? '-top-2 border-l border-t' : pos.side === 'left' ? 'top-1/2 -left-2 -mt-2 border-b border-l' : 'top-1/2 -right-2 -mt-2 border-r border-t'
+            } border-foil`}
+            style={pos.side === 'top' || pos.side === 'bottom' ? { left: pos.tail - 8 } : undefined}
+          />
+        )}
+        {live && <span className="mb-2 inline-block rounded-full bg-void px-2.5 py-1 font-mono text-[10px] font-semibold tracking-[.2em]">{t.live}</span>}
+        <p className="text-[15px] leading-snug">{caption}</p>
+        {finale && (
+          <div className="mt-3 flex gap-2">
             <button onClick={close} className="rounded-full bg-foil px-5 py-2 text-sm font-semibold text-note-deep hover:bg-paper">{t.explore}</button>
             <button
               onClick={() => {
                 close();
-                setTimeout(() => (location.href = '/board?tour=1'), 50);
+                routerRef.current.push('/board?tour=1');
               }}
               className="rounded-full border border-foil px-5 py-2 text-sm font-semibold text-foil hover:bg-foil hover:text-note-deep"
             >
               {t.replay}
             </button>
           </div>
-        ) : (
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                paused.current = !paused.current;
-                setIsPaused(paused.current);
-              }}
-              className="rounded-full border border-paper/40 px-4 py-2 text-sm hover:border-foil hover:text-foil"
-            >
-              {isPaused ? t.resume : t.pause}
-            </button>
-            <button onClick={() => (abort.current = true)} className="rounded-full border border-paper/40 px-4 py-2 text-sm hover:border-foil hover:text-foil">{t.skip}</button>
-          </div>
         )}
-        <div className="h-1 w-full overflow-hidden rounded-full bg-paper/15" aria-hidden>
-          <div className="h-full bg-foil transition-all duration-700" style={{ width: `${Math.min(100, (step / STEPS) * 100)}%` }} />
-        </div>
       </div>
+
+      {!finale && (
+        <div className="fixed bottom-3 left-1/2 z-[100] flex -translate-x-1/2 items-center gap-3 rounded-full border border-foil/60 bg-note-deep/95 py-1.5 ps-5 pe-1.5 text-paper shadow-[0_10px_24px_-10px_#000a]">
+          <div className="h-1 w-24 overflow-hidden rounded-full bg-paper/15" aria-hidden>
+            <div className="h-full bg-foil transition-all duration-700" style={{ width: `${Math.min(100, (step / STEPS) * 100)}%` }} />
+          </div>
+          <button
+            onClick={() => {
+              paused.current = !paused.current;
+              setIsPaused(paused.current);
+            }}
+            className="rounded-full border border-paper/40 px-3.5 py-1.5 text-sm hover:border-foil hover:text-foil"
+          >
+            {isPaused ? t.resume : t.pause}
+          </button>
+          <button onClick={() => (abort.current = true)} className="rounded-full border border-paper/40 px-3.5 py-1.5 text-sm hover:border-foil hover:text-foil">{t.skip}</button>
+        </div>
+      )}
     </>
   );
 }
