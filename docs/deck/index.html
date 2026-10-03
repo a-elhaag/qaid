@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Qaid impact deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
+<style>
+@page { size: 1280px 720px; margin: 0 }
+:root { --note:#0d4a43; --deep:#082f2b; --foil:#c8a24a; --paper:#f1ead6; --hi:#f8f3e4; --ink:#16201e; --soft:#4b5b57; --rule:#b9c4b4; --void:#7a1f2b }
+* { box-sizing: border-box; margin: 0 }
+html, body { background: #888 }
+body { font: 400 20px/1.45 'Hanken Grotesk', system-ui, sans-serif; color: var(--ink) }
+.slide { width: 1280px; height: 720px; background: var(--paper); position: relative; overflow: hidden; page-break-after: always; break-after: page; padding: 56px 72px 64px }
+.slide::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 10px; background: var(--note) }
+.slide::after { content: ''; position: absolute; inset: 10px 0 auto 0; height: 3px; background: var(--foil) }
+h1 { font: 700 46px/1.12 'Bodoni Moda', 'Reem Kufi', serif; color: var(--note); letter-spacing: -.01em }
+h2 { font: 700 26px/1.2 'Bodoni Moda', serif; color: var(--note) }
+.kick { font: 600 13px 'JetBrains Mono', monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--foil); margin-bottom: 10px }
+.mono { font-family: 'JetBrains Mono', monospace }
+.soft { color: var(--soft) }
+.foot { position: absolute; left: 72px; right: 72px; bottom: 22px; font: 400 12px 'JetBrains Mono', monospace; color: var(--soft); display: flex; justify-content: space-between; gap: 24px }
+.card { background: var(--hi); border: 1px solid var(--ink); border-radius: 18px; padding: 22px 26px }
+.grid { display: grid; gap: 22px }
+.big { font: 700 84px/1 'Bodoni Moda', serif; color: var(--note) }
+.tag { display: inline-block; font: 600 11px 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 1px solid var(--note); color: var(--note) }
+.tag.est { border-color: var(--foil); color: #8a6a1c }
+.tag.bad { border-color: var(--void); color: var(--void) }
+ul { padding-left: 22px } li { margin: 6px 0 }
+table { border-collapse: collapse; width: 100% } th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--rule); font-size: 18px } th { font: 600 12px 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); border-bottom: 2px solid var(--ink) }
+td.y { color: var(--note); font-weight: 700 } td.n { color: var(--void) } td.m { color: #8a6a1c }
+svg text { font-family: 'Hanken Grotesk', sans-serif }
+.dark { background: var(--note); color: var(--paper) } .dark::before { background: var(--deep) }
+.dark h1 { color: var(--paper) } .dark .kick { color: var(--foil) } .dark .foot { color: #b8cdc7 }
+@media screen { body { padding: 20px 0 } .slide { margin: 0 auto 20px } }
+</style>
+</head>
+<body>
+
+<!-- 1 TITLE -->
+<section class="slide dark" style="display:flex;flex-direction:column;justify-content:center">
+  <img src="../../public/logo-mark.svg" width="120" alt="" style="margin-bottom:26px;border-radius:26px">
+  <div class="kick">Impact deck &middot; hackathon, 1&ndash;3 October 2026</div>
+  <h1 style="font-size:92px;margin-bottom:6px">Qaid <span dir="rtl" style="font-family:'Reem Kufi',serif;color:var(--foil)">قيد</span></h1>
+  <p style="font:600 34px/1.25 'Bodoni Moda',serif;max-width:900px;margin-top:14px">Qaid prepares the books. The accountant decides.</p>
+  <p style="margin-top:26px;font-size:22px;max-width:860px;color:#d6e4df">An assistant for Egyptian accounting offices that turns their clients&rsquo; phone-photographed receipts into reviewed, ready-to-confirm entries.</p>
+  <div class="foot"><span>Live demo: qaid-bay.vercel.app &middot; code: github.com/a-elhaag/qaid</span><span>Demo data is invented</span></div>
+</section>
+
+<!-- 2 PROBLEM -->
+<section class="slide">
+  <div class="kick">The problem</div>
+  <h1>Egypt runs on small businesses. Their books run on paper.</h1>
+  <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:34px">
+    <div class="card"><div class="big">90%</div><p class="soft">of Egypt&rsquo;s private sector is micro, small and medium businesses</p></div>
+    <div class="card"><div class="big">43%</div><p class="soft">of GDP, about EGP 1.2 trillion of production</p></div>
+    <div class="card"><div class="big">75%</div><p class="soft">of the workforce</p></div>
+  </div>
+  <p class="mono soft" style="font-size:12px;margin-top:10px">MSMEDA CEO, OECD committee, Nov 2024 (Ahram Online). <span class="tag">sourced</span></p>
+  <div class="grid" style="grid-template-columns:1.2fr 1fr;margin-top:26px;align-items:start">
+    <div>
+      <h2 style="margin-bottom:8px">What the accountant does with it</h2>
+      <ul>
+        <li>Every client sends receipts as photos and chat messages.</li>
+        <li>The accountant chases the missing ones, then types each one in.</li>
+        <li>Manual receipt entry: <b>3&ndash;5 minutes</b> each, <b>1&ndash;3%</b> errors.</li>
+      </ul>
+    </div>
+    <div class="card" style="padding:16px 22px">
+      <b>56%</b> of 250 accountants and bookkeepers surveyed say they spend too much time on manual tasks (Dext, UK, 2023).
+      <p class="mono soft" style="font-size:12px;margin-top:8px">Workload figures are UK/US and vendor sources. No Egyptian equivalent was found. <span class="tag est">indicative</span></p>
+    </div>
+  </div>
+  <div class="foot"><span>Sources: Ahram Online; DocuClipper; Accountex/Dext. Full list: docs/notes/market-research.md</span><span>2</span></div>
+</section>
+
+<!-- 3 WHO WE SELL TO -->
+<section class="slide">
+  <div class="kick">Who we sell to</div>
+  <h1>Small businesses keep their accountant. So we serve the accountant.</h1>
+  <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:32px;align-items:start">
+    <div>
+      <h2 style="margin-bottom:10px">Why they will not switch to software alone</h2>
+      <ul>
+        <li>The state is adding compliance, not removing it. The simplified tax regime (Law 6 of 2025, turnover up to EGP 20m) is conditional on e-invoice and e-receipt compliance.</li>
+        <li>The e-invoice threshold dropped from EGP 500,000 to 250,000 a year, so more small businesses must register.</li>
+        <li>E-invoices and e-receipts cover what a business <i>issues</i>. The paper from its <i>suppliers</i> is still a photo for the accountant to read.</li>
+      </ul>
+      <p class="mono soft" style="font-size:12px;margin-top:10px">EY; Andersen; ClearTax Egypt. <span class="tag">sourced</span> The last point is our reasoning. <span class="tag est">reasoning</span></p>
+    </div>
+    <div>
+      <svg viewBox="0 0 500 330" width="100%">
+        <g font-size="17">
+          <rect x="10" y="10" width="480" height="80" rx="18" fill="#f8f3e4" stroke="#16201e"/>
+          <text x="30" y="44" font-weight="700">Shop owner (client)</text><text x="30" y="70" fill="#4b5b57">taps a link, photographs a receipt. Nothing else changes.</text>
+          <rect x="10" y="130" width="480" height="80" rx="18" fill="#0d4a43"/>
+          <text x="30" y="164" font-weight="700" fill="#f1ead6">Qaid</text><text x="30" y="190" fill="#c8a24a">reads, checks, flags, prepares</text>
+          <rect x="10" y="250" width="480" height="70" rx="18" fill="#f8f3e4" stroke="#16201e"/>
+          <text x="30" y="282" font-weight="700">Accounting office</text><text x="30" y="306" fill="#4b5b57">reviews, confirms, files. Same people, more clients.</text>
+          <path d="M250 92 v36 M250 212 v36" stroke="#c8a24a" stroke-width="3" fill="none"/>
+          <path d="M243 120 l7 9 l7 -9 M243 240 l7 9 l7 -9" stroke="#c8a24a" stroke-width="3" fill="none"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="foot"><span>The buyer is the office. The owner pays nothing extra.</span><span>3</span></div>
+</section>
+
+<!-- 4 HOW IT WORKS -->
+<section class="slide">
+  <div class="kick">How it works</div>
+  <h1>From a phone photo to a confirmed entry</h1>
+  <svg id="flow" viewBox="0 0 1136 420" width="1136" height="420" style="margin-top:10px"></svg>
+  <div class="foot"><span>Phone page needs no account. The accountant app uses Supabase Auth and row-level security.</span><span>4</span></div>
+</section>
+
+<!-- 5 BALANCE -->
+<section class="slide">
+  <div class="kick">How the work is balanced</div>
+  <h1>Two readers, one referee, a human on top</h1>
+  <div class="grid" style="grid-template-columns:1.05fr 1fr 1fr;margin-top:24px;align-items:start">
+    <div class="card">
+      <h2 style="font-size:20px;margin-bottom:10px">Who does what</h2>
+      <p><span class="tag">AI</span> reads text, proposes a category, drafts a reminder.</p>
+      <p style="margin-top:10px"><span class="tag">Code</span> adds VAT, totals, duplicates, price jumps, client status. Every figure comes from stored records.</p>
+      <p style="margin-top:10px"><span class="tag">Human</span> confirms. Only confirmed entries count.</p>
+      <p class="soft" style="margin-top:12px;font-size:16px">Nothing is fixed silently. If the readers disagree, the entry is flagged.</p>
+    </div>
+    <div class="card">
+      <h2 style="font-size:20px;margin-bottom:6px">Two lanes</h2>
+      <p style="font-size:17px"><b>A:</b> Cohere Parse v5 reads layout, GPT-6 structures it.<br><b>B:</b> GPT-6 vision reads the image.</p>
+      <p style="font-size:17px;margin-top:8px"><b>fuse()</b> compares field by field: <i>agree</i>, <i>resolved</i>, <i>disputed</i>, or <i>single</i> if one lane is down.</p>
+      <p class="soft" style="font-size:15px;margin-top:8px">The Parse deployment hit its rate limit (HTTP 429) during testing. The pipeline fell back to one lane and said so.</p>
+    </div>
+    <div class="card" style="text-align:center">
+      <h2 style="font-size:20px;margin-bottom:4px">Measured: 50 fields</h2>
+      <svg id="donut" viewBox="0 0 220 220" width="210" height="210"></svg>
+      <div id="donutKey" style="font-size:15px;text-align:left;display:inline-block"></div>
+      <p class="mono soft" style="font-size:11px;margin-top:6px">10 receipts, both lanes on. <span class="tag">measured</span></p>
+    </div>
+  </div>
+  <div class="foot"><span>Source: npm run score, paced run. docs/notes/market-research.md section 4</span><span>5</span></div>
+</section>
+
+<!-- 6 FAST ARCHITECTURE -->
+<section class="slide">
+  <div class="kick">Fast architecture</div>
+  <h1>The client never waits. The lanes run side by side.</h1>
+  <div class="grid" style="grid-template-columns:1.25fr 1fr;margin-top:22px;align-items:start">
+    <div class="card">
+      <h2 style="font-size:20px;margin-bottom:6px">One receipt, seconds (measured)</h2>
+      <svg id="lat" viewBox="0 0 600 270" width="100%"></svg>
+      <p class="mono soft" style="font-size:11px">Lane times from single runs (vision 2.9&ndash;4.3 s, Parse 5.9 s). One-after-the-other is the sum, our arithmetic. Fused median 6.5 s, max 8.0 s over 10 receipts.</p>
+    </div>
+    <div>
+      <ul style="font-size:18px">
+        <li><b>Upload returns at once.</b> Reading continues after the response (<span class="mono">after()</span>).</li>
+        <li><b>Postgres job queue</b> with <span class="mono">skip locked</span>, retries and a dead state. A one-minute sweep is the backstop.</li>
+        <li><b>Parallel lanes.</b> Time is the slower lane, not the sum.</li>
+        <li><b>Live board.</b> It refreshes itself every 4 s, so the accountant sees the row appear.</li>
+        <li><b>Phone checks first.</b> Blur, light and crop are caught before upload, so bad photos never reach the models.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Next.js 16, Supabase (Postgres, Auth, Storage), Azure AI Foundry</span><span>6</span></div>
+</section>
+
+<!-- 7 STATE OF THE ART -->
+<section class="slide">
+  <div class="kick">State of the art</div>
+  <h1>Not just OCR, not just one model</h1>
+  <table style="margin-top:26px">
+    <tr><th></th><th>Plain OCR</th><th>One LLM</th><th>Qaid</th></tr>
+    <tr><td>Reads Arabic and English receipts</td><td class="m">partly</td><td class="y">yes</td><td class="y">yes</td></tr>
+    <tr><td>A second, independent reading</td><td class="n">no</td><td class="n">no</td><td class="y">yes, two lanes</td></tr>
+    <tr><td>Flags what it is unsure of</td><td class="n">no</td><td class="n">rarely</td><td class="y">yes, per field</td></tr>
+    <tr><td>Totals and VAT computed by code</td><td class="m">sometimes</td><td class="n">model guess</td><td class="y">always</td></tr>
+    <tr><td>Checks across time (duplicates, price jumps)</td><td class="n">no</td><td class="n">no</td><td class="y">yes</td></tr>
+    <tr><td>Accountant has the final say</td><td class="m">varies</td><td class="m">varies</td><td class="y">built in</td></tr>
+  </table>
+  <p class="mono soft" style="font-size:12px;margin-top:12px">A design comparison, not a benchmark. We did not run OCR-only or single-model baselines. <span class="tag est">qualitative</span></p>
+  <div class="foot"><span>Models: GPT-6.1 Sol (extract), GPT-6 Astra (chat, drafts), Cohere Parse v5, on one Azure Foundry resource</span><span>7</span></div>
+</section>
+
+<!-- 8 MEASURED -->
+<section class="slide">
+  <div class="kick">Measured result</div>
+  <h1>Money fields were perfect. We are open about the misses.</h1>
+  <div class="grid" style="grid-template-columns:1.1fr 1fr;margin-top:22px;align-items:start">
+    <div class="card">
+      <h2 style="font-size:20px;margin-bottom:4px">Correct fields, 10 receipts, both lanes</h2>
+      <svg id="acc" viewBox="0 0 560 250" width="100%"></svg>
+      <p class="mono soft" style="font-size:11px">Median 6.5 s per receipt, max 8.0 s. <span class="tag">measured</span></p>
+    </div>
+    <div>
+      <p class="tag bad" style="margin-bottom:8px">what we are not claiming</p>
+      <ul style="font-size:17px">
+        <li>Receipts were <b>clean renders, not phone photos</b>, and only <b>10</b> of them. Real accuracy will be lower.</li>
+        <li>One date came out as 2021 instead of 2026 and one Arabic name lost a letter. Both were chosen between two disagreeing readers, so the next fix is to send every such pick to the accountant.</li>
+        <li>The Parse reader was rate limited, so 5 of 50 fields were single-lane. Production needs more quota.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Reproduce: npm run score. Notes: docs/notes/market-research.md</span><span>8</span></div>
+</section>
+
+<!-- 9 IMPACT -->
+<section class="slide">
+  <div class="kick">Business impact</div>
+  <h1>More clients per bookkeeper, same team</h1>
+  <div class="grid" style="grid-template-columns:1fr 1.1fr;margin-top:24px;align-items:start">
+    <div>
+      <p style="font-size:19px">If Qaid takes a client from <b>5 h</b> to <b>4 h</b> a month, a bookkeeper moves from 25 to about <b>31 clients</b>: <span class="mono">+6</span>.</p>
+      <p class="soft" style="margin-top:10px;font-size:16px">Egyptian bookkeeper pay is about EGP 6,000 a month (Glassdoor median), so an hour costs about EGP 37.5. The 5 h and 4 h figures are US workload numbers.</p>
+      <p style="margin-top:12px;font-size:17px">Pricing idea: <b>EGP 25&ndash;35 per client per month</b>, or a flat office plan, until a real fee is known.</p>
+      <span class="tag est">all estimates</span>
+    </div>
+    <div class="card">
+      <h2 style="font-size:20px;margin-bottom:6px">Extra monthly gain per bookkeeper, after paying EGP 25 per client</h2>
+      <table>
+        <tr><th>Office fee per client</th><th>Gain (EGP)</th></tr>
+        <tr><td>375 <span class="soft">(2.0x labour)</span></td><td class="y">+1,563</td></tr>
+        <tr><td>469 <span class="soft">(2.5x)</span></td><td class="y">+2,148</td></tr>
+        <tr><td>563 <span class="soft">(3.0x)</span></td><td class="y">+2,734</td></tr>
+      </table>
+      <p class="mono soft" style="font-size:11px;margin-top:8px">Fees come from an assumed 2&ndash;3x markup on labour, not from Egyptian office data. We have not found a real fee per client. <span class="tag est">estimate</span></p>
+    </div>
+  </div>
+  <div class="foot"><span>Method and assumptions: docs/notes/pricing-and-impact.md</span><span>9</span></div>
+</section>
+
+<!-- 10 NEXT -->
+<section class="slide dark" style="display:flex;flex-direction:column;justify-content:center">
+  <div class="kick">Honest limits and next</div>
+  <h1>What Qaid does not do, and what we do next</h1>
+  <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:30px;font-size:19px">
+    <ul>
+      <li>Prepares only. It does not file taxes, talk to banks or send WhatsApp messages.</li>
+      <li>Printed receipts, EGP only. Handwriting is out of scope.</li>
+      <li>VAT and insurance rates in config are still marked &ldquo;to verify&rdquo;.</li>
+    </ul>
+    <ul>
+      <li>Test with one real accounting office and real phone photos.</li>
+      <li>Flag every disputed or resolved field for review.</li>
+      <li>Raise the Parse quota, then pilot with a handful of clients.</li>
+    </ul>
+  </div>
+  <p style="margin-top:34px;font:600 30px 'Bodoni Moda',serif;color:var(--foil)">Qaid prepares. The accountant decides.</p>
+  <div class="foot"><span>qaid-bay.vercel.app &middot; github.com/a-elhaag/qaid</span><span>10</span></div>
+</section>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const el = (p, n, a = {}, t) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (t != null) e.textContent = t; p.appendChild(e); return e };
+
+/* flow */
+(() => {
+  const s = document.getElementById('flow');
+  const box = (x, y, w, h, t, sub, dark) => {
+    el(s, 'rect', { x, y, width: w, height: h, rx: 16, fill: dark ? '#0d4a43' : '#f8f3e4', stroke: '#16201e' });
+    el(s, 'text', { x: x + w / 2, y: y + h / 2 - (sub ? 4 : -6), 'text-anchor': 'middle', 'font-size': 19, 'font-weight': 700, fill: dark ? '#f1ead6' : '#16201e' }, t);
+    if (sub) el(s, 'text', { x: x + w / 2, y: y + h / 2 + 19, 'text-anchor': 'middle', 'font-size': 14, fill: dark ? '#c8a24a' : '#4b5b57' }, sub);
+  };
+  const arrow = (x1, y1, x2, y2) => {
+    el(s, 'path', { d: `M${x1} ${y1} L${x2} ${y2}`, stroke: '#c8a24a', 'stroke-width': 3, fill: 'none' });
+    const a = Math.atan2(y2 - y1, x2 - x1), l = 10;
+    el(s, 'path', { d: `M${x2} ${y2} l${-l * Math.cos(a - .5)} ${-l * Math.sin(a - .5)} M${x2} ${y2} l${-l * Math.cos(a + .5)} ${-l * Math.sin(a + .5)}`, stroke: '#c8a24a', 'stroke-width': 3, fill: 'none' });
+  };
+  box(0, 150, 150, 84, 'Client phone', 'blur, light, crop');
+  box(190, 150, 150, 84, 'Upload', 'private link');
+  box(380, 150, 150, 84, 'Job queue', 'Postgres');
+  box(590, 60, 200, 84, 'Lane A', 'Parse v5 + GPT-6 text');
+  box(590, 240, 200, 84, 'Lane B', 'GPT-6 vision');
+  box(830, 150, 130, 84, 'fuse()', 'reconcile', true);
+  box(1000, 150, 136, 84, 'Checks', 'dup, price, VAT');
+  arrow(150, 192, 188, 192); arrow(340, 192, 378, 192);
+  arrow(530, 180, 588, 110); arrow(530, 204, 588, 270);
+  arrow(790, 110, 828, 180); arrow(790, 280, 828, 204);
+  arrow(960, 192, 998, 192);
+  box(560, 346, 190, 70, 'Entry + flags', 'needs_review');
+  box(790, 346, 170, 70, 'Live board', 'every 4 s', true);
+  box(1000, 346, 136, 70, 'Confirm', 'accountant');
+  arrow(1068, 236, 1068, 344);
+  arrow(1000, 381, 962, 381); arrow(790, 381, 752, 381);
+  el(s, 'text', { x: 0, y: 40, 'font-size': 15, fill: '#4b5b57' }, 'Upload returns at once; reading continues in the background.');
+  el(s, 'text', { x: 0, y: 400, 'font-size': 15, fill: '#4b5b57' }, 'Then: month-end Excel / PDF pack, chat over the books, Arabic reminders.');
+})();
+
+/* donut: measured field agreement */
+(() => {
+  const data = [['agree', 40, '#0d4a43'], ['resolved', 2, '#c8a24a'], ['disputed', 3, '#7a1f2b'], ['single lane', 5, '#b9c4b4']];
+  const total = 50, s = document.getElementById('donut'), r = 78, c = 2 * Math.PI * r;
+  let off = 0;
+  data.forEach(([, n, col]) => {
+    el(s, 'circle', { cx: 110, cy: 110, r, fill: 'none', stroke: col, 'stroke-width': 30, 'stroke-dasharray': `${c * n / total} ${c}`, 'stroke-dashoffset': -off, transform: 'rotate(-90 110 110)' });
+    off += c * n / total;
+  });
+  el(s, 'text', { x: 110, y: 118, 'text-anchor': 'middle', 'font-size': 34, 'font-weight': 700, fill: '#0d4a43', 'font-family': 'Bodoni Moda' }, '80%');
+  el(s, 'text', { x: 110, y: 136, 'text-anchor': 'middle', 'font-size': 11, fill: '#4b5b57' }, 'both lanes agree');
+  document.getElementById('donutKey').innerHTML = data.map(([l, n, col]) => `<div><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${col};margin-right:8px"></span>${l} <b>${n}</b></div>`).join('');
+})();
+
+/* latency bars */
+(() => {
+  const s = document.getElementById('lat'), k = 43; // px per second
+  const row = (y, label, segs) => {
+    el(s, 'text', { x: 0, y: y + 22, 'font-size': 15, 'font-weight': 600 }, label);
+    segs.forEach(([x, w, col, t]) => { el(s, 'rect', { x: 150 + x * k, y, width: w * k, height: 34, rx: 8, fill: col }); el(s, 'text', { x: 150 + x * k + w * k / 2, y: y + 22, 'text-anchor': 'middle', 'font-size': 13, fill: col === '#c8a24a' ? '#16201e' : '#f1ead6' }, t); });
+  };
+  row(20, 'One after the other', [[0, 5.9, '#4b5b57', 'Parse 5.9 s'], [5.9, 4, '#7a8a85', 'vision 4 s']]);
+  row(80, 'Side by side', [[0, 5.9, '#0d4a43', 'Parse 5.9 s']]);
+  row(116, '', [[0, 4, '#c8a24a', 'vision 4 s']]);
+  el(s, 'text', { x: 150, y: 190, 'font-size': 14, fill: '#16201e' }, 'about 9.9 s vs about 5.9 s (single-run lane times)');
+  el(s, 'text', { x: 150, y: 214, 'font-size': 14, fill: '#4b5b57' }, 'Measured end to end (both lanes + fuse): median 6.5 s, max 8.0 s');
+  el(s, 'path', { d: 'M150 238 H' + (150 + 10 * k), stroke: '#16201e', 'stroke-width': 1 });
+  [0, 2, 4, 6, 8, 10].forEach(t => { el(s, 'path', { d: `M${150 + t * k} 238 v6`, stroke: '#16201e' }); el(s, 'text', { x: 150 + t * k, y: 260, 'text-anchor': 'middle', 'font-size': 11, fill: '#4b5b57' }, t + 's'); });
+})();
+
+/* accuracy bars */
+(() => {
+  const s = document.getElementById('acc');
+  [['Subtotal', 10], ['VAT', 10], ['Total', 10], ['Date', 9], ['Vendor', 9]].forEach(([l, n], i) => {
+    const y = 12 + i * 46;
+    el(s, 'text', { x: 0, y: y + 22, 'font-size': 16, 'font-weight': 600 }, l);
+    el(s, 'rect', { x: 100, y, width: 360, height: 30, rx: 8, fill: '#e3dcc3' });
+    el(s, 'rect', { x: 100, y, width: 36 * n, height: 30, rx: 8, fill: n === 10 ? '#0d4a43' : '#c8a24a' });
+    el(s, 'text', { x: 478, y: y + 22, 'font-size': 16, 'font-weight': 700, fill: '#16201e' }, n + '/10');
+  });
+})();
+</script>
+</body>
+</html>
