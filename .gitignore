@@ -44,7 +44,7 @@ next-env.d.ts
 .env.local
 .env*.local
 samples/photos/
-public/qr/
 !.env.example
 .mcp.json
 .claude/settings.json
+.impeccable/

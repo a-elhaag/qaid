@@ -9,6 +9,7 @@ import { signOut } from '../login/actions';
 import { isDemoEmail } from '@/server/tour';
 import { addClient } from './actions';
 import { btnPrimary, btnSolid } from '@/components/buttons';
+import { Logo } from '@/components/Logo';
 import { PhonePanel } from '@/components/PhonePanel';
 import { LiveRefresh } from './LiveRefresh';
 
@@ -37,7 +38,7 @@ export default async function Board() {
         <header className="relative flex flex-wrap items-center justify-between gap-4 bg-note px-5 py-5 text-paper sm:px-8">
           <Guilloche kind="band" w={1180} h={90} className="absolute inset-0 h-full w-full" />
           <div className="relative">
-            <p className="font-disp text-3xl font-bold leading-none">{t.brand}</p>
+            <Logo name={t.brand} size={44} />
             <p className="mt-1 font-mono text-xs tracking-[.18em] text-foil">{b.title}</p>
           </div>
           <div className="relative flex items-center gap-4">

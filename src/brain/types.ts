@@ -25,7 +25,7 @@ export interface Entry {
   imageHash?: string | null;
 }
 
-export type FlagKind = 'duplicate' | 'price_jump' | 'vat_spike';
+type FlagKind = 'duplicate' | 'price_jump' | 'vat_spike';
 export interface Flag {
   kind: FlagKind;
   entryId: string;

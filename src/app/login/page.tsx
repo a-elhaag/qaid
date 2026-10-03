@@ -1,6 +1,7 @@
 import { DEMO } from '@/lib/demo';
 import { getDict } from '@/i18n/server';
 import { Guilloche } from '@/components/Guilloche';
+import { LogoMark } from '@/components/Logo';
 import { LangToggle } from '@/components/LangToggle';
 import { AuthPanel } from './AuthPanel';
 import { signIn, signUp } from './actions';
@@ -23,6 +24,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
               <LangToggle className="rounded-full border-2 border-foil px-5 py-2.5 text-sm font-semibold text-foil hover:bg-foil hover:text-note-deep" />
             </div>
             <div>
+              <LogoMark size={72} tile={false} className="mb-4" />
               <h1 className="font-disp text-[clamp(72px,14vw,150px)] font-bold leading-[.9] tracking-tight">{t.brand}</h1>
               <p className="mt-4 max-w-[28ch] font-disp text-xl text-foil sm:text-2xl">{t.tagline}</p>
             </div>

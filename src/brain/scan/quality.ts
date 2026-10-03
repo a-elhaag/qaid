@@ -1,6 +1,6 @@
-export const BLUR_MIN = 60;
-export const DARK_MAX = 45;
-export const BRIGHT_MIN = 245;
+const BLUR_MIN = 60;
+const DARK_MAX = 45;
+const BRIGHT_MIN = 245;
 
 export function toGray(rgba: Uint8ClampedArray): Uint8ClampedArray {
   const g = new Uint8ClampedArray(rgba.length / 4);

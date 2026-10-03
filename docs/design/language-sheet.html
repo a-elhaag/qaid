@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Qaid design language</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,700&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Reem+Kufi:wght@500;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --note:#0d4a43;       /* issuing green */
+  --note-deep:#082f2b;
+  --foil:#c8a24a;       /* gold foil */
+  --paper:#f1ead6;      /* note stock */
+  --paper-hi:#f8f3e4;
+  --ink:#16201e;
+  --ink-soft:#4b5b57;
+  --rule:#b9c4b4;
+  --void:#7a1f2b;
+  --r:18px;--r-sm:10px;       /* flag: the only red */
+  --disp:"Bodoni Moda","Reem Kufi",serif;
+  --ui:"Hanken Grotesk","Tajawal",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+[dir=rtl]{--disp:"Reem Kufi","Bodoni Moda",serif;--ui:"Tajawal","Hanken Grotesk",system-ui,sans-serif}
+*{box-sizing:border-box}
+html{background:var(--note-deep)}
+body{margin:0;font:400 16px/1.55 var(--ui);color:var(--ink);background:var(--paper);
+  font-variant-numeric:tabular-nums;
+  background-image:radial-gradient(ellipse at 15% 0,#fffaf0 0,transparent 55%),radial-gradient(ellipse at 100% 100%,#e6ecd9 0,transparent 50%)}
+::selection{background:var(--foil);color:var(--note-deep)}
+:focus-visible{outline:2px solid var(--foil);outline-offset:3px}
+svg.guil{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* top toggle */
+.bar{display:flex;justify-content:space-between;align-items:center;padding:18px 0;font:500 13px var(--mono);letter-spacing:.08em;color:var(--ink-soft)}
+.toggle{border-radius:999px;border:1px solid var(--note);background:transparent;color:var(--note);padding:8px 16px;font:600 13px var(--ui);cursor:pointer}
+.toggle:hover{background:var(--note);color:var(--paper)}
+
+/* HERO: the note */
+.note{border-radius:28px;position:relative;margin:8px 0 48px;background:var(--note);color:var(--paper);overflow:hidden;
+  border:1px solid var(--foil);outline:6px solid var(--note);outline-offset:-14px;
+  box-shadow:0 1px 0 #fff3 inset,0 18px 40px -18px #082f2b99,0 2px 6px #082f2b66}
+.note .guil{opacity:.55}
+.note-in{position:relative;display:grid;grid-template-columns:1.25fr .75fr;gap:32px;padding:56px 56px 48px;min-height:440px}
+.mark{font:700 clamp(84px,14vw,168px)/.9 var(--disp);letter-spacing:-.03em;margin:0;color:var(--paper);
+  text-shadow:0 1px 0 #0006,0 0 0 var(--foil)}
+.mark small{display:block;font:500 clamp(20px,3vw,34px)/1.3 var(--disp);letter-spacing:.02em;color:var(--foil);margin-top:14px}
+.serial{font:500 14px var(--mono);letter-spacing:.22em;color:var(--foil);display:flex;gap:28px;flex-wrap:wrap}
+.serial b{font-weight:500;color:var(--paper)}
+.denom{align-self:end;text-align:end}
+.denom .n{font:700 clamp(64px,9vw,120px)/1 var(--disp);color:var(--foil);display:block}
+.denom span.l{font:500 13px var(--mono);letter-spacing:.2em;color:var(--paper);text-transform:uppercase}
+.seal{position:absolute;inset-inline-end:40px;top:36px;width:112px;height:112px}
+.seal circle,.seal path{fill:none;stroke:var(--foil)}
+.seal text{fill:var(--foil);font:500 11px var(--mono);letter-spacing:.3em}
+@media(max-width:760px){.note-in{grid-template-columns:1fr;padding:36px 24px}.denom{text-align:start}.seal{width:76px;height:76px;inset-inline-end:16px;top:16px}}
+
+h2{font:700 clamp(28px,4vw,44px)/1.1 var(--disp);margin:56px 0 6px;color:var(--note)}
+.lede{max-width:62ch;color:var(--ink-soft);margin:0 0 22px}
+
+/* palette */
+.sw{border-radius:var(--r);overflow:hidden;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border:1px solid var(--ink)}
+.sw div{padding:46px 14px 12px;font:500 12px var(--mono);letter-spacing:.06em}
+.sw em{display:block;font:600 14px var(--ui);font-style:normal;letter-spacing:0}
+
+/* BOARD */
+.board{border-radius:var(--r);overflow:hidden;position:relative;background:var(--paper-hi);border:1px solid var(--ink);padding:0}
+.board-head{position:relative;background:var(--note);color:var(--paper);padding:18px 24px;display:flex;justify-content:space-between;align-items:center;overflow:hidden}
+.board-head .guil{opacity:.5}
+.board-head>*{position:relative}
+.board-head h3{margin:0;font:700 22px var(--disp)}
+.btn{border-radius:999px;font:600 14px var(--ui);padding:10px 20px;border:1px solid var(--foil);background:var(--foil);color:var(--note-deep);cursor:pointer;border-radius:var(--r-sm)}
+.btn:hover{background:var(--paper);border-color:var(--paper)}
+.btn.ghost{background:transparent;color:var(--paper)}
+table{width:100%;border-collapse:collapse}
+th{font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;text-align:start;color:var(--ink-soft);padding:12px 24px;border-bottom:2px solid var(--ink)}
+td{padding:0 24px;border-bottom:1px solid var(--rule);height:64px}
+tr.client:hover td{background:#e9efdc}
+.sn{font:500 12px var(--mono);color:var(--ink-soft);letter-spacing:.14em}
+.cn{font:700 18px var(--disp)}
+/* split-flap cells (the raise) */
+.flaps{display:inline-flex;gap:3px;direction:ltr}
+.flap{border-radius:6px;position:relative;display:inline-block;width:24px;height:36px;line-height:36px;text-align:center;background:var(--note-deep);color:var(--paper);font:500 22px var(--mono);overflow:hidden;
+  box-shadow:0 1px 0 #fff2 inset,0 1px 2px #0006}
+.flap::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:#000a;box-shadow:0 1px 0 #fff1}
+.flap.go{animation:clack .38s cubic-bezier(.2,.9,.2,1)}
+@keyframes clack{0%{transform:scaleY(1)}35%{transform:scaleY(.1)}100%{transform:scaleY(1)}}
+.flap.hot{background:var(--foil);color:var(--note-deep)}
+.stamp{border-radius:8px;display:inline-block;border:2px solid var(--void);color:var(--void);font:600 12px var(--mono);letter-spacing:.2em;padding:4px 8px;transform:rotate(-4deg);text-transform:uppercase}
+[dir=rtl] .stamp{transform:rotate(4deg)}
+
+/* REVIEW */
+.review{border-radius:var(--r);overflow:hidden;display:grid;grid-template-columns:1fr 300px;gap:0;border:1px solid var(--ink);background:var(--paper-hi)}
+@media(max-width:860px){.review{grid-template-columns:1fr}}
+.row{display:grid;grid-template-columns:28px 90px 1fr 120px 110px;gap:12px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--rule);position:relative}
+.row:last-child{border:0}
+.row .amt{font:500 18px var(--mono);text-align:end}
+.row .cat{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.chk{width:20px;height:20px;border:1.5px solid var(--ink);background:transparent;cursor:pointer;border-radius:0;display:grid;place-items:center;padding:0}
+.chk[aria-checked=true]{background:var(--note);border-color:var(--note)}
+.chk[aria-checked=true]::after{content:"";width:9px;height:5px;border:2px solid var(--foil);border-top:0;border-inline-end:0;transform:rotate(-45deg) translate(1px,-1px)}
+.row.sealed{background:linear-gradient(90deg,#d8e4cc55,transparent)}
+.foil{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f6e3a1,var(--foil) 55%,#8c6d22);color:var(--note-deep);font:700 13px var(--mono);box-shadow:0 1px 2px #0006;animation:strike .5s cubic-bezier(.2,1.3,.3,1)}
+@keyframes strike{from{transform:scale(2.4) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
+.src{position:relative;background:#ddd6bf;padding:20px;border-inline-start:1px solid var(--ink);overflow:hidden}
+.recpt{border-radius:6px 6px 0 0;background:#fffdf6;padding:16px 14px;font:400 12px/1.7 var(--mono);color:#222;transform:rotate(-1.5deg);box-shadow:0 10px 18px -8px #0006,0 1px 2px #0005;clip-path:polygon(0 0,100% 0,100% 97%,95% 100%,90% 97%,85% 100%,80% 97%,75% 100%,70% 97%,65% 100%,60% 97%,55% 100%,50% 97%,45% 100%,40% 97%,35% 100%,30% 97%,25% 100%,20% 97%,15% 100%,10% 97%,5% 100%,0 97%)}
+.recpt hr{border:0;border-top:1px dashed #999;margin:6px 0}
+.recpt .t{display:flex;justify-content:space-between}
+.src p{font:500 11px var(--mono);letter-spacing:.14em;color:var(--ink-soft);text-transform:uppercase;margin:14px 0 0}
+
+/* PHONE */
+.phones{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start}
+.phone{width:290px;height:560px;border:8px solid var(--ink);border-radius:44px;background:var(--note);position:relative;overflow:hidden;color:var(--paper);display:flex;flex-direction:column;justify-content:space-between;padding:26px 22px}
+.phone .guil{opacity:.5}
+.phone>*{position:relative}
+.phone h4{font:700 40px/1 var(--disp);margin:6px 0 0}
+.phone .who{font:500 12px var(--mono);letter-spacing:.16em;color:var(--foil)}
+.snap{width:196px;height:196px;border-radius:50%;margin:0 auto;border:2px solid var(--foil);background:radial-gradient(circle at 35% 30%,#f6e3a1,var(--foil) 58%,#8c6d22);display:grid;place-items:center;color:var(--note-deep);font:700 22px var(--disp);box-shadow:0 0 0 10px #c8a24a33,0 0 0 22px #c8a24a1a;cursor:pointer;text-align:center}
+.snap svg{width:54px;height:54px;display:block;margin:0 auto 6px}
+.foot{font:500 11px var(--mono);letter-spacing:.12em;text-align:center;color:#c9d3c4}
+.got{background:var(--paper);color:var(--note)}
+.got .snap{background:var(--note);color:var(--foil);box-shadow:0 0 0 10px #0d4a4322}
+.got .who,.got .foot{color:var(--ink-soft)}
+.got .guil{opacity:.35}
+.note-p{font:500 14px/1.6 var(--ui);color:var(--ink-soft);max-width:34ch}
+.fine{margin:64px 0 40px;font:500 12px var(--mono);letter-spacing:.1em;color:var(--ink-soft)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar"><span id="t-bar">QAID / DESIGN LANGUAGE / BANKNOTE ENGRAVING</span><button class="toggle" id="lang">العربية</button></div>
+
+  <!-- HERO NOTE -->
+  <section class="note" aria-label="Qaid">
+    <svg class="guil" id="g-hero" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1180 440"></svg>
+    <svg class="seal" viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="60" r="56" stroke-width="1"/><circle cx="60" cy="60" r="44" stroke-width="1"/>
+      <path id="arc" d="M60 60 m-48 0 a48 48 0 1 1 96 0 a48 48 0 1 1 -96 0" stroke="none"/>
+      <text><textPath href="#arc" startOffset="0">PREPARED · YOU DECIDE · PREPARED · YOU DECIDE ·</textPath></text>
+      <text x="60" y="68" text-anchor="middle" style="font:700 22px Bodoni Moda,serif;letter-spacing:0">Q</text>
+    </svg>
+    <div class="note-in">
+      <div>
+        <div class="serial"><span>SERIAL <b id="ser">QD 0472913</b></span><span id="t-issue">ISSUED TO <b>AHMED &amp; PARTNERS</b></span></div>
+        <h1 class="mark" id="t-mark">Qaid<small id="t-sub">Books prepared. Every number yours to confirm.</small></h1>
+      </div>
+      <div class="denom"><span class="n" id="t-big">47</span><span class="l" id="t-big-l">receipts read this morning</span></div>
+    </div>
+  </section>
+
+  <h2 id="t-h-pal">Ink and stock</h2>
+  <p class="lede" id="t-l-pal">Four materials. Green does the structure, gold marks what is confirmed, paper holds the numbers, red is spent only on a flag.</p>
+  <div class="sw">
+    <div style="background:var(--note);color:var(--paper)"><em>Issuing green</em>#0D4A43</div>
+    <div style="background:var(--foil);color:var(--note-deep)"><em>Gold foil</em>#C8A24A</div>
+    <div style="background:var(--paper);color:var(--ink)"><em>Note stock</em>#F1EAD6</div>
+    <div style="background:var(--ink);color:var(--paper)"><em>Plate ink</em>#16201E</div>
+    <div style="background:var(--void);color:var(--paper)"><em>Flag red</em>#7A1F2B</div>
+  </div>
+
+  <h2 id="t-h-board">The board</h2>
+  <p class="lede" id="t-l-board">Clients are serial-numbered plates. Counts are split-flap cells: a receipt lands and the digit clacks over.</p>
+  <div class="board">
+    <div class="board-head">
+      <svg class="guil" id="g-band" preserveAspectRatio="none" viewBox="0 0 1180 70"></svg>
+      <h3 id="t-bh">October ledger</h3>
+      <button class="btn" id="sim">Simulate a receipt</button>
+    </div>
+    <table>
+      <thead><tr><th id="t-c1">No.</th><th id="t-c2">Client</th><th id="t-c3">New</th><th id="t-c4">To review</th><th id="t-c5">Status</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+  </div>
+
+  <h2 id="t-h-rev">Review, source beside number</h2>
+  <p class="lede" id="t-l-rev">Tick lines, confirm. Each confirmed entry is struck with a foil seal. The receipt sits beside the figure it produced.</p>
+  <div class="review">
+    <div id="rows"></div>
+    <aside class="src">
+      <div class="recpt">
+        <div class="t"><b>AL-NOUR STATIONERY</b><span>14/10</span></div><hr>
+        <div class="t"><span>A4 paper x5</span><span>412.00</span></div>
+        <div class="t"><span>Toner</span><span>1,250.00</span></div><hr>
+        <div class="t"><span>VAT 14%</span><span>232.68</span></div>
+        <div class="t"><b>TOTAL</b><b>1,894.68</b></div>
+      </div>
+      <p id="t-src">Source receipt, line 2</p>
+    </aside>
+  </div>
+  <p style="margin-top:14px"><button class="btn" style="background:var(--note);border-color:var(--note);color:var(--paper)" id="conf">Confirm selected</button></p>
+
+  <h2 id="t-h-ph">Client phone</h2>
+  <p class="lede" id="t-l-ph">One thing to do. The foil button is the whole interface.</p>
+  <div class="phones">
+    <div class="phone" id="ph1">
+      <svg class="guil" id="g-ph1" preserveAspectRatio="xMidYMid slice" viewBox="0 0 274 540"></svg>
+      <div><div class="who" id="t-ph-who">FROM AHMED &amp; PARTNERS</div><h4 id="t-ph-h">Hello, Mona</h4></div>
+      <button class="snap" id="snap"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.6"/></svg><span id="t-snap">Photograph receipt</span></span></button>
+      <div class="foot" id="t-ph-f">No account needed</div>
+    </div>
+    <div class="phone got">
+      <svg class="guil" id="g-ph2" preserveAspectRatio="xMidYMid slice" viewBox="0 0 274 540"></svg>
+      <div><div class="who" id="t-g-who">RECEIVED 14:02</div><h4 id="t-g-h">Got it.</h4></div>
+      <div class="snap"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="t-g-b">Sent</span></span></div>
+      <div class="foot" id="t-g-f">Ahmed will check it. You can close this.</div>
+    </div>
+    <p class="note-p" id="t-ph-n">The two states of the page. Nothing else on screen: no menu, no history, no sign-in.</p>
+  </div>
+  <p class="fine" id="t-fine">DESIGN LANGUAGE SHEET / NOT THE APP / SYNTHETIC DATA</p>
+</div>
+
+<script>
+/* guilloche: hypotrochoid rosettes + interlaced sine bands */
+const NS="http://www.w3.org/2000/svg";
+function path(d,stroke,sw,op){const p=document.createElementNS(NS,"path");p.setAttribute("d",d);p.setAttribute("fill","none");p.setAttribute("stroke",stroke);p.setAttribute("stroke-width",sw);p.setAttribute("opacity",op);return p}
+function rosette(svg,cx,cy,R,r,d,rot,col,n){
+  for(let k=0;k<n;k++){
+    const a=rot+k*(Math.PI*2/ (n*(R/r|0||1)))*0;let dd="";
+    const dk=d*(0.55+0.45*k/n);
+    for(let t=0;t<=Math.PI*2*r/ gcd(R,r)+.01;t+=.02){
+      const x=(R-r)*Math.cos(t)+dk*Math.cos((R-r)/r*t);
+      const y=(R-r)*Math.sin(t)-dk*Math.sin((R-r)/r*t);
+      dd+=(dd?"L":"M")+(cx+x*Math.cos(rot)-y*Math.sin(rot)).toFixed(1)+" "+(cy+x*Math.sin(rot)+y*Math.cos(rot)).toFixed(1);
+    }
+    svg.appendChild(path(dd,col,.6,.8));
+  }
+}
+function gcd(a,b){return b?gcd(b,a%b):a}
+function bands(svg,w,h,col,n,amp){
+  for(let k=0;k<n;k++){let d="";for(let x=0;x<=w;x+=4){const y=h/2+Math.sin(x/38+k*.5)*amp*Math.cos(x/190+k*.22)+Math.sin(x/17-k*.4)*amp*.25;d+=(d?"L":"M")+x+" "+y.toFixed(1)}svg.appendChild(path(d,col,.6,.75))}
+}
+const gold="#c8a24a",lt="#e9d9a4";
+(function(){
+  const h=document.getElementById("g-hero");
+  rosette(h,930,210,170,37,95,0,gold,14);
+  rosette(h,930,210,110,25,60,.4,lt,8);
+  rosette(h,150,320,130,29,70,.2,gold,10);
+  bands(h,1180,440,"#0a3a34",9,28);
+  bands(document.getElementById("g-band"),1180,70,gold,14,18);
+  for(const id of ["g-ph1","g-ph2"]){const s=document.getElementById(id);
+    rosette(s,230,60,90,19,50,0,id=="g-ph2"?"#0d4a43":gold,10);
+    rosette(s,40,500,100,23,55,.3,id=="g-ph2"?"#0d4a43":gold,10)}
+})();
+
+/* i18n */
+const T={en:{
+bar:"QAID / DESIGN LANGUAGE / BANKNOTE ENGRAVING",lang:"العربية",issue:"ISSUED TO <b>AHMED & PARTNERS</b>",mark:"Qaid",sub:"Books prepared. Every number yours to confirm.",
+big:"47",bigl:"receipts read this morning",hpal:"Ink and stock",lpal:"Four materials. Green does the structure, gold marks what is confirmed, paper holds the numbers, red is spent only on a flag.",
+hb:"The board",lb:"Clients are serial-numbered plates. Counts are split-flap cells: a receipt lands and the digit clacks over.",bh:"October ledger",sim:"Simulate a receipt",
+c:["No.","Client","New","To review","Status"],hrev:"Review, source beside number",lrev:"Tick lines, confirm. Each confirmed entry is struck with a foil seal. The receipt sits beside the figure it produced.",
+conf:"Confirm selected",src:"Source receipt, line 2",hph:"Client phone",lph:"One thing to do. The foil button is the whole interface.",who:"FROM AHMED & PARTNERS",ph:"Hello, Mona",snap:"Photograph receipt",pf:"No account needed",gw:"RECEIVED 14:02",gh:"Got it.",gb:"Sent",gf:"Ahmed will check it. You can close this.",pn:"The two states of the page. Nothing else on screen: no menu, no history, no sign-in.",fine:"DESIGN LANGUAGE SHEET / NOT THE APP / SYNTHETIC DATA",
+clients:["Al-Nour Stationery","Cairo Bakery","Delta Pharmacy","Sphinx Auto Parts"],status:["Clear","Needs you","Possible duplicate","Clear"],
+rows:[["12 Oct","Al-Nour Stationery","Supplies","412.00"],["14 Oct","Al-Nour Stationery","Supplies","1,894.68"],["14 Oct","Misr Electricity","Utilities","2,310.00"],["15 Oct","Hassan Packaging","Supplies","3,975.00"]],flag:"Price jump"},
+ar:{bar:"قيد / لغة التصميم / نقش الورقة النقدية",lang:"English",issue:"صادر إلى <b>أحمد وشركاه</b>",mark:"قيد",sub:"دفاترك جاهزة. كل رقم بتأكيدك.",
+big:"٤٧",bigl:"إيصالًا قُرئت هذا الصباح",hpal:"الحبر والورق",lpal:"أربع خامات. الأخضر للبنية، والذهبي لما تم تأكيده، والورق يحمل الأرقام، والأحمر للتنبيه فقط.",
+hb:"اللوحة",lb:"العملاء لوحات بأرقام تسلسلية. الأعداد خلايا تنقلب: يصل إيصال فيدور الرقم.",bh:"دفتر أكتوبر",sim:"محاكاة إيصال",
+c:["رقم","العميل","جديد","للمراجعة","الحالة"],hrev:"المراجعة، والمصدر بجوار الرقم",lrev:"حدّد البنود ثم أكّد. كل قيد مؤكَّد يُختم بختم ذهبي. والإيصال بجوار الرقم الذي خرج منه.",
+conf:"تأكيد المحدد",src:"الإيصال المصدر، السطر ٢",hph:"هاتف العميل",lph:"شيء واحد فقط. الزر الذهبي هو الواجهة كلها.",who:"من أحمد وشركاه",ph:"أهلًا يا منى",snap:"صوّري الإيصال",pf:"بدون حساب",gw:"استُلم ١٤:٠٢",gh:"وصل.",gb:"تم",gf:"سيراجعه أحمد. يمكنك الإغلاق.",pn:"حالتا الصفحة. لا شيء غير ذلك: لا قائمة ولا سجل ولا تسجيل دخول.",fine:"ورقة لغة التصميم / ليست التطبيق / بيانات تجريبية",
+clients:["النور للأدوات المكتبية","مخبز القاهرة","صيدلية الدلتا","سفنكس لقطع الغيار"],status:["سليم","يحتاجك","تكرار محتمل","سليم"],
+rows:[["١٢ أكتوبر","النور للأدوات المكتبية","مستلزمات","٤١٢٫٠٠"],["١٤ أكتوبر","النور للأدوات المكتبية","مستلزمات","١٬٨٩٤٫٦٨"],["١٤ أكتوبر","كهرباء مصر","مرافق","٢٬٣١٠٫٠٠"],["١٥ أكتوبر","حسن للتغليف","مستلزمات","٣٬٩٧٥٫٠٠"]],flag:"ارتفاع سعر"}};
+let L="en";
+const $=i=>document.getElementById(i);
+const base=[[3,1],[0,4],[2,2],[1,0]];
+function flaps(n,hot){const s=String(n).padStart(2,"0");return `<span class="flaps">${[...s].map(c=>`<span class="flap${hot?" hot":""}">${c}</span>`).join("")}</span>`}
+function renderBoard(){const t=T[L];
+  $("tb").innerHTML=t.clients.map((c,i)=>`<tr class="client"><td class="sn">QD-${String(1041+i*7).padStart(4,"0")}</td><td><span class="cn">${c}</span></td><td>${flaps(base[i][0])}</td><td>${flaps(base[i][1],base[i][1]>2)}</td><td>${i==2?`<span class="stamp">${t.status[i]}</span>`:t.status[i]}</td></tr>`).join("")}
+let sealed=new Set(),sel=new Set([0,1]);
+function renderRows(){const t=T[L];
+  $("rows").innerHTML=t.rows.map((r,i)=>`<div class="row${sealed.has(i)?" sealed":""}"><button class="chk" role="checkbox" aria-checked="${sel.has(i)}" data-i="${i}" aria-label="select"></button><span class="sn">${r[0]}</span><span><b>${r[1]}</b>${i==3?` <span class="stamp">${t.flag}</span>`:""}</span><span class="cat">${r[2]}</span><span class="amt">${r[3]}${sealed.has(i)?` <span class="foil">✓</span>`:""}</span></div>`).join("");
+  $("rows").querySelectorAll(".chk").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;sel.has(i)?sel.delete(i):sel.add(i);renderRows()})}
+function apply(){const t=T[L];document.documentElement.lang=L;document.documentElement.dir=L=="ar"?"rtl":"ltr";
+  $("t-bar").textContent=t.bar;$("lang").textContent=t.lang;$("t-issue").innerHTML="<span>"+t.issue+"</span>";
+  $("t-mark").innerHTML=t.mark+`<small id="t-sub">${t.sub}</small>`;$("t-big").textContent=t.big;$("t-big-l").textContent=t.bigl;
+  $("t-h-pal").textContent=t.hpal;$("t-l-pal").textContent=t.lpal;$("t-h-board").textContent=t.hb;$("t-l-board").textContent=t.lb;$("t-bh").textContent=t.bh;$("sim").textContent=t.sim;
+  t.c.forEach((x,i)=>$("t-c"+(i+1)).textContent=x);
+  $("t-h-rev").textContent=t.hrev;$("t-l-rev").textContent=t.lrev;$("conf").textContent=t.conf;$("t-src").textContent=t.src;
+  $("t-h-ph").textContent=t.hph;$("t-l-ph").textContent=t.lph;$("t-ph-who").textContent=t.who;$("t-ph-h").textContent=t.ph;$("t-snap").textContent=t.snap;$("t-ph-f").textContent=t.pf;
+  $("t-g-who").textContent=t.gw;$("t-g-h").textContent=t.gh;$("t-g-b").textContent=t.gb;$("t-g-f").textContent=t.gf;$("t-ph-n").textContent=t.pn;$("t-fine").textContent=t.fine;
+  renderBoard();renderRows()}
+$("lang").onclick=()=>{L=L=="en"?"ar":"en";apply()};
+$("sim").onclick=()=>{base[1][0]++;base[1][1]++;renderBoard();const r=$("tb").children[1];r.querySelectorAll(".flap").forEach((f,i)=>{if(i>=2)setTimeout(()=>f.classList.add("go"),i*60)})};
+$("conf").onclick=()=>{sel.forEach(i=>sealed.add(i));sel.clear();renderRows()};
+apply();
+</script>
+</body>
+</html>

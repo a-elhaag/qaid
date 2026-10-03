@@ -29,7 +29,7 @@ const must = ({ error }: { error: unknown }) => {
   if (error) throw error;
 };
 
-export const supabaseRepo: Repo = {
+const supabaseRepo: Repo = {
   async setStatus(id, status, error) {
     must(await db().from('documents').update({ status, error: error ?? null }).eq('id', id));
   },

@@ -6,7 +6,7 @@ import type { Entry, Flag } from '@/brain/types';
 const ext = { vendor: 'Gulf Supplies', date: '2026-10-05', subtotal: 109, vat: 15.26, total: 124.26, docType: 'purchase' as const };
 
 function fakeRepo(existing: Entry[] = []) {
-  const state = { status: [] as string[], inserted: [] as any[], flags: [] as Flag[], cleared: [] as string[] };
+  const state = { status: [] as string[], inserted: [] as Parameters<Repo['insertEntry']>[0][], flags: [] as Flag[], cleared: [] as string[] };
   const repo: Repo = {
     async setStatus(_id, s) { state.status.push(s); },
     async clearDocument(id) { state.cleared.push(id); },

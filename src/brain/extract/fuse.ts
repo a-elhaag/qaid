@@ -4,8 +4,8 @@ import { appearsIn } from './digits';
 
 type Field = 'vendor' | 'date' | 'subtotal' | 'vat' | 'total';
 type Value = string | number;
-export type Agreement = 'agree' | 'resolved' | 'disputed' | 'single';
-export interface FusedField { value: Value | null; agreement: Agreement; candidates: Value[] }
+type Agreement = 'agree' | 'resolved' | 'disputed' | 'single';
+interface FusedField { value: Value | null; agreement: Agreement; candidates: Value[] }
 export interface Fused {
   fields: Record<Field, FusedField>;
   docType: DocType;

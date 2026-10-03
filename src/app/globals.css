@@ -12,7 +12,6 @@
   --rule: #b9c4b4;
   --void: #7a1f2b;
   --r: 18px;
-  --r-sm: 10px;
   --disp: var(--f-disp), var(--f-kufi), serif;
   --ui: var(--f-ui), var(--f-taj), system-ui, sans-serif;
   --mono: var(--f-mono), ui-monospace, monospace;
@@ -35,7 +34,6 @@
   --font-disp: var(--disp);
   --font-sans: var(--ui);
   --font-mono: var(--mono);
-  --radius-card: var(--r);
 }
 
 body {

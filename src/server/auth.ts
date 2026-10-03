@@ -2,8 +2,6 @@ import { redirect } from 'next/navigation';
 import { supabaseServer } from '@/lib/supabase/server';
 import { db } from './db';
 
-export { assertSameOffice, safeNext } from './authRules';
-
 export async function requireOffice(): Promise<{ userId: string; officeId: string; email: string }> {
   const {
     data: { user },

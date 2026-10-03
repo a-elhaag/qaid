@@ -1,8 +1,8 @@
 import { RATES } from '../config';
 import type { Entry } from '../types';
 
-export const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
-export const isIncome = (e: Entry) => e.category === 'sales';
+const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
+const isIncome = (e: Entry) => e.category === 'sales';
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
 const confirmedOnly = (es: Entry[]) => es.filter((e) => e.confirmed);
 

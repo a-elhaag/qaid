@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Guilloche } from '@/components/Guilloche';
+import { LogoMark } from '@/components/Logo';
 import { LangToggle } from '@/components/LangToggle';
 import { getDict } from '@/i18n/server';
 import { requireOffice } from '@/server/auth';
@@ -61,7 +62,8 @@ export default async function ClientDetail({ params }: { params: Promise<{ clien
         <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div>
             <Link href="/board" data-tour="back" className="font-mono text-xs tracking-[.14em] text-foil hover:underline">← {r.back}</Link>
-            <h1 className="mt-2 font-disp text-3xl font-bold sm:text-4xl">{lang === 'ar' ? client.name : client.name_en || client.name}</h1>
+            <LogoMark size={30} tile={false} className="mt-3" />
+            <h1 className="mt-1 font-disp text-3xl font-bold sm:text-4xl">{lang === 'ar' ? client.name : client.name_en || client.name}</h1>
             <p className="mt-2 font-mono text-xs tracking-[.08em] text-paper/70" dir="ltr">{r.uploadLink}: /c/{client.token}</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">

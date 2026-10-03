@@ -1,5 +1,4 @@
 export type Lang = 'en' | 'ar';
-export const LANGS: Lang[] = ['en', 'ar'];
 export const dir = (l: Lang) => (l === 'ar' ? 'rtl' : 'ltr');
 
 const en = {
@@ -20,7 +19,6 @@ const en = {
     exists: 'This email already has an account. Sign in instead.',
     noOffice: 'This account is not linked to an office.',
     check: 'Check your email to confirm the account.',
-    seal: 'PREPARED · YOU DECIDE · PREPARED · YOU DECIDE ·',
   },
   review: {
     back: 'Client ledger',
@@ -63,7 +61,6 @@ const en = {
     error: 'It did not send. Check your connection and try again.',
     receiptsSent: '{n} receipts sent',
     retake: { blurry: 'The photo is blurry. Hold steady and try again.', dark: 'Too dark. Move to better light and try again.', bright: 'Too bright. Avoid glare and try again.' },
-    invented: 'Demo data is invented',
   },
   chat: {
     title: 'Ask Qaid',
@@ -141,7 +138,6 @@ const ar: typeof en = {
     exists: 'هذا البريد لديه حساب بالفعل. سجّل الدخول بدلًا من ذلك.',
     noOffice: 'هذا الحساب غير مرتبط بمكتب.',
     check: 'تحقق من بريدك لتأكيد الحساب.',
-    seal: 'جاهز · وأنت تقرر · جاهز · وأنت تقرر ·',
   },
   review: {
     back: 'دفتر العملاء',
@@ -184,7 +180,6 @@ const ar: typeof en = {
     error: 'لم يُرسل. تحقق من الاتصال وحاول مرة أخرى.',
     receiptsSent: 'تم إرسال {n} إيصالات',
     retake: { blurry: 'الصورة غير واضحة. ثبّت يدك وصوّر مرة أخرى.', dark: 'الصورة معتمة. انتقل لمكان أكثر إضاءة وحاول مجددًا.', bright: 'إضاءة زائدة. تجنب الانعكاس وحاول مجددًا.' },
-    invented: 'بيانات تجريبية مخترعة',
   },
   chat: {
     title: 'اسأل قيد',
