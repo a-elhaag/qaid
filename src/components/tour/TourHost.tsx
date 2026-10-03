@@ -47,7 +47,8 @@ export function TourHost({ t }: { t: T }) {
   const [spot, setSpot] = useState<Rect | null>(null);
   const [phone, setPhone] = useState<string | null>(null);
   const [phoneShown, setPhoneShown] = useState(false);
-  const [ripple, setRipple] = useState<{ x: number; y: number } | null>(null);
+  const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
+  const [pressed, setPressed] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [finale, setFinale] = useState(false);
 
@@ -110,8 +111,30 @@ export function TourHost({ t }: { t: T }) {
         el.scrollIntoView({ block: 'center', behavior: 'smooth' });
       }
     };
-    const go = async (path: string, ready: string) => {
-      routerRef.current.push(path);
+    /** Glide the visible cursor onto an element (optionally inside the phone iframe) and wait for it to arrive. */
+    const point = async (el: Element, inFrame = false) => {
+      el.scrollIntoView({ block: 'center', behavior: 'instant' as ScrollBehavior });
+      await sleep(80);
+      const r = el.getBoundingClientRect();
+      const f = inFrame && frame.current ? frame.current.getBoundingClientRect() : { left: 0, top: 0 };
+      setCursor({ x: f.left + r.left + Math.min(r.width * 0.5, 120), y: f.top + r.top + r.height * 0.5 });
+      await sleep(650);
+    };
+    const press = async () => {
+      setPressed(true);
+      await sleep(180);
+      setPressed(false);
+    };
+    /** Move to a real element, press, and click it for real. */
+    const tap = async (el: HTMLElement, inFrame = false) => {
+      await point(el, inFrame);
+      await press();
+      el.click();
+    };
+    /** Click a link or button and wait for the next page's marker element. */
+    const nav = async (from: string, ready: string) => {
+      const el = await until(() => q(from), 30000);
+      await tap(el);
       await until(() => q(ready), 40000);
     };
 
@@ -125,12 +148,15 @@ export function TourHost({ t }: { t: T }) {
       const info = first;
 
       // 1. the board and its stories
+      setCursor({ x: window.innerWidth - 80, y: window.innerHeight - 140 });
       say(t.intro);
       await look(() => q('[data-tour=board]'));
-      await sleep(5500);
+      await sleep(3200);
       say(t.problems);
-      await look(() => [...document.querySelectorAll('[data-tour=stamp]')].map((e) => e.closest('[role=row]')!).filter(Boolean));
-      await sleep(6500);
+      const stamps = [...document.querySelectorAll('[data-tour=stamp]')].map((e) => e.closest('[role=row]')!).filter(Boolean);
+      await look(() => stamps);
+      for (const row of stamps) await point(row);
+      await sleep(1200);
       await look(null);
 
       // 2. a client's phone: the real client page, driven by the tour
@@ -142,15 +168,12 @@ export function TourHost({ t }: { t: T }) {
         const d = frame.current?.contentDocument;
         return d?.querySelector('input[type=file]') ? d : null;
       }, 40000);
-      await sleep(2500);
+      await sleep(900);
       say(t.send);
       const btn = doc.querySelector<HTMLElement>('button[aria-label]');
-      if (btn && frame.current) {
-        const f = frame.current.getBoundingClientRect();
-        const b = btn.getBoundingClientRect();
-        setRipple({ x: f.left + b.left + b.width / 2, y: f.top + b.top + b.height / 2 });
-        await sleep(1100);
-        setRipple(null);
+      if (btn) {
+        await point(btn, true);
+        await press();
       }
       const win = frame.current!.contentWindow as unknown as { File: typeof File; DataTransfer: typeof DataTransfer; Event: typeof Event };
       const dt = new win.DataTransfer();
@@ -159,76 +182,83 @@ export function TourHost({ t }: { t: T }) {
       input.files = dt.files;
       input.dispatchEvent(new win.Event('change', { bubbles: true }));
       await until(() => doc.querySelector('section.bg-paper'), 30000);
-      await sleep(2500);
+      await sleep(1400);
 
       // 3. the live reading
       say(t.reading, true);
       setPhoneShown(false);
-      await look(() => q(`[data-tour=row-${info.cafe.id}]`));
+      const cafeRow = await until(() => q(`[data-tour=row-${info.cafe.id}]`));
+      await look(() => cafeRow);
+      await point(cafeRow);
       for (;;) {
         const s = (await (await fetch(`/api/demo/tour?since=${encodeURIComponent(since)}`)).json()) as Info;
         if (s.ready) break;
         if (s.failed) throw new Error('failed');
-        await sleep(2000);
+        await sleep(1500);
       }
       say(t.arrived);
-      await sleep(4500);
+      await sleep(2200);
 
-      // 4. review and confirm
+      // 4. open the client, review and confirm
       await look(null);
-      await go(`/board/${info.cafe.id}`, '[data-tour=review-row]');
+      await tap((await until(() => q(`[data-tour=row-${info.cafe.id}]`)))!);
+      await until(() => q('[data-tour=review-row]'), 40000);
       say(t.review);
+      const rrow = q('[data-tour=review-row]')!;
       await look(() => q('[data-tour=review-row]'));
-      await sleep(7500);
+      await point(rrow);
+      await sleep(3800);
       say(t.confirm);
       await look(() => q('[data-tour=confirm]'));
-      await sleep(3000);
-      q('[data-tour=confirm]')?.click();
+      await tap((await until(() => q('[data-tour=confirm]')))!);
       await until(() => !q('[data-tour=review-row]'), 25000);
-      await sleep(3500);
+      await sleep(1800);
 
       // 5. the chaser
       say(t.reminder);
       await look(() => q('[data-tour=reminder]'));
-      await sleep(5000);
-      q('[data-tour=reminder-btn]')?.click();
+      await sleep(2400);
+      await tap((await until(() => q('[data-tour=reminder-btn]')))!);
       await until(() => (q('[data-tour=reminder-text]') as HTMLTextAreaElement | null)?.value.length, 45000);
       await look(() => q('[data-tour=reminder]'));
-      await sleep(6500);
+      await sleep(3600);
 
-      // 6. chat
+      // 6. chat: back to the board, open Ask Qaid, type, send
       await look(null);
-      await go('/chat', '[data-tour=chat-input]');
+      await nav('[data-tour=back]', '[data-tour=ask]');
+      await nav('[data-tour=ask]', '[data-tour=chat-input]');
       say(t.chat);
       const box = q('[data-tour=chat-input]') as HTMLInputElement;
+      await point(box);
       await look(() => box.closest('form'));
-      await sleep(2500);
       const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!;
       let typed = '';
       for (const ch of t.question) {
         typed += ch;
         setter.call(box, typed);
         box.dispatchEvent(new Event('input', { bubbles: true }));
-        await sleep(45);
+        await sleep(38);
       }
-      await sleep(600);
-      q('[data-tour=chat-send]')?.click();
+      await sleep(300);
+      await tap(q('[data-tour=chat-send]')!);
       await look(() => q('[data-tour=chat-answer]') ?? box.closest('form'), false);
       await until(() => q('[data-tour=chat-answer]'), 60000);
-      for (let same = 0, last = -1; same < 4; ) {
+      for (let same = 0, last = -1; same < 3; ) {
         await sleep(1000);
         const len = q('[data-tour=chat-answer]')?.innerText.length ?? 0;
         same = len === last ? same + 1 : 0;
         last = len;
       }
-      await sleep(3500);
+      await sleep(2200);
 
       // 7. the month-end pack
       await look(null);
-      await go(`/board/${info.mona.id}`, '[data-tour=export]');
+      await nav('[data-tour=back]', `[data-tour=row-${info.mona.id}]`);
+      await nav(`[data-tour=row-${info.mona.id}]`, '[data-tour=export]');
       say(t.pack);
       await look(() => q('[data-tour=export]'));
-      await sleep(6000);
+      await point((await until(() => q('[data-tour=export] a')))!);
+      await sleep(3200);
     } catch (e) {
       if (!(e instanceof Aborted)) setCaption(t.failed);
       if (!(e instanceof Aborted)) await tick(4000);
@@ -236,7 +266,7 @@ export function TourHost({ t }: { t: T }) {
       const wasAborted = abort.current;
       target.current = null;
       setPhoneShown(false);
-      setRipple(null);
+      setCursor(null);
       setLive(false);
       if (since) {
         setCaption(t.tidy);
@@ -294,7 +324,18 @@ export function TourHost({ t }: { t: T }) {
           <iframe ref={frame} src={phone} title="client phone" className="pointer-events-none h-full w-full border-0" />
         </div>
       )}
-      {ripple && <span aria-hidden className="pointer-events-none fixed z-[96] h-16 w-16 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-foil/70" style={{ left: ripple.x, top: ripple.y }} />}
+      {cursor && (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed left-0 top-0 z-[110] transition-transform duration-[650ms] ease-[cubic-bezier(.4,0,.2,1)]"
+          style={{ transform: `translate(${cursor.x}px, ${cursor.y}px)` }}
+        >
+          <span className={`absolute -left-5 -top-5 h-10 w-10 rounded-full bg-foil/60 transition-all duration-150 ${pressed ? 'scale-100 opacity-100' : 'scale-50 opacity-0'}`} />
+          <svg width="26" height="30" viewBox="0 0 26 30" className={`relative drop-shadow-[0_3px_3px_rgba(0,0,0,.45)] transition-transform duration-150 ${pressed ? 'scale-90' : ''}`}>
+            <path d="M2 2 L2 23 L8 18 L12.5 28 L17 26 L12.5 16.5 L21 16 Z" fill="#f1ead6" stroke="#082f2b" strokeWidth="2" strokeLinejoin="round" />
+          </svg>
+        </div>
+      )}
 
       <div
         role="status"

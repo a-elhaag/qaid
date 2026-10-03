@@ -14,7 +14,7 @@ export default async function ChatPage() {
         <Guilloche kind="band" w={1180} h={90} className="absolute inset-0 h-full w-full" />
         <div className="relative flex items-center justify-between gap-4">
           <div>
-            <Link href="/board" className="font-mono text-xs tracking-[.14em] text-foil hover:underline">← {t.board.title}</Link>
+            <Link href="/board" data-tour="back" className="font-mono text-xs tracking-[.14em] text-foil hover:underline">← {t.board.title}</Link>
             <h1 className="mt-1 font-disp text-3xl font-bold">{t.chat.title}</h1>
           </div>
           <LangToggle className="text-foil hover:bg-foil hover:text-note-deep" />

@@ -58,7 +58,7 @@ export default async function ClientDetail({ params }: { params: Promise<{ clien
         <Guilloche kind="band" w={1180} h={110} className="absolute inset-0 h-full w-full" />
         <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div>
-            <Link href="/board" className="font-mono text-xs tracking-[.14em] text-foil hover:underline">← {r.back}</Link>
+            <Link href="/board" data-tour="back" className="font-mono text-xs tracking-[.14em] text-foil hover:underline">← {r.back}</Link>
             <h1 className="mt-2 font-disp text-3xl font-bold sm:text-4xl">{lang === 'ar' ? client.name : client.name_en || client.name}</h1>
             <p className="mt-2 font-mono text-xs tracking-[.08em] text-paper/70" dir="ltr">{r.uploadLink}: /c/{client.token}</p>
           </div>
