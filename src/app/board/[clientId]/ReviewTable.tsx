@@ -39,7 +39,7 @@ export function ReviewTable({ rows, failed, t }: { rows: ReviewRow[]; failed: { 
       ))}
 
       {rows.map((r) => (
-        <article key={r.id} className="grid gap-4 rounded-[var(--r)] border border-ink/40 bg-paper-hi p-4 sm:grid-cols-[auto_132px_1fr]">
+        <article key={r.id} data-tour="review-row" className="grid gap-4 rounded-[var(--r)] border border-ink/40 bg-paper-hi p-4 sm:grid-cols-[auto_132px_1fr]">
           <input
             type="checkbox"
             aria-label={t.confirmSel}
@@ -92,6 +92,7 @@ export function ReviewTable({ rows, failed, t }: { rows: ReviewRow[]; failed: { 
       {rows.length > 0 && (
         <div className="flex items-center gap-4">
           <button
+            data-tour="confirm"
             disabled={pending || !live.length}
             onClick={() =>
               start(async () => {

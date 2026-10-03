@@ -9,7 +9,7 @@ export function Reminder({ clientId, show, missing, t }: { clientId: string; sho
   const [pending, start] = useTransition();
   if (!show) return null;
   return (
-    <section className="space-y-3 rounded-[var(--r)] border-2 border-foil bg-[#f6ecc8] p-5">
+    <section data-tour="reminder" className="space-y-3 rounded-[var(--r)] border-2 border-foil bg-[#f6ecc8] p-5">
       {missing.length > 0 && (
         <p className="text-sm">
           <span className="font-mono text-[11px] uppercase tracking-[.14em] text-ink-soft">{t.missingList}</span>
@@ -17,6 +17,7 @@ export function Reminder({ clientId, show, missing, t }: { clientId: string; sho
         </p>
       )}
       <button
+        data-tour="reminder-btn"
         disabled={pending}
         onClick={() => start(async () => setText(await draftReminderAction(clientId)))}
         className="rounded-full bg-note px-5 py-2 text-sm font-semibold text-paper hover:bg-note-deep disabled:opacity-60"
@@ -26,7 +27,7 @@ export function Reminder({ clientId, show, missing, t }: { clientId: string; sho
       {text !== null && (
         <>
           {/* The draft is Arabic whatever the UI language: clients read it on WhatsApp. */}
-          <textarea value={text} onChange={(e) => setText(e.target.value)} rows={5} dir="rtl" lang="ar" className="w-full rounded-xl border border-ink/30 bg-paper-hi p-3 text-sm outline-none focus:border-note" />
+          <textarea data-tour="reminder-text" value={text} onChange={(e) => setText(e.target.value)} rows={5} dir="rtl" lang="ar" className="w-full rounded-xl border border-ink/30 bg-paper-hi p-3 text-sm outline-none focus:border-note" />
           <div className="flex items-center gap-4 text-sm">
             <button
               className="font-semibold underline"

@@ -46,7 +46,7 @@ export function AuthPanel({ t, next, demo, signIn, signUp, startOnSignUp }: Prop
             <button className={gold}>{t.signIn}</button>
           </form>
           <form action={signIn} className="space-y-3 border-t border-foil/30 pt-5">
-            <input type="hidden" name="next" value={next} />
+            <input type="hidden" name="next" value="/board?tour=1" />
             <input type="hidden" name="email" value={demo.email} />
             <input type="hidden" name="password" value={demo.password} />
             <p className="text-sm text-paper/70">{t.demoNote}</p>

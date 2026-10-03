@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Bodoni_Moda, Hanken_Grotesk, JetBrains_Mono, Reem_Kufi, Tajawal } from 'next/font/google';
-import { dir } from '@/i18n/dictionary';
+import { Suspense } from 'react';
+import { TourHost } from '@/components/tour/TourHost';
+import { dictionaries, dir } from '@/i18n/dictionary';
 import { getLang } from '@/i18n/server';
 import './globals.css';
 
@@ -19,7 +21,12 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
   const lang = await getLang();
   return (
     <html lang={lang} dir={dir(lang)} className={`${disp.variable} ${ui.variable} ${mono.variable} ${kufi.variable} ${taj.variable}`}>
-      <body className="min-h-dvh">{children}</body>
+      <body className="min-h-dvh">
+        {children}
+        <Suspense>
+          <TourHost t={dictionaries[lang].tour} />
+        </Suspense>
+      </body>
     </html>
   );
 }

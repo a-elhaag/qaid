@@ -56,7 +56,7 @@ export function Chat({ t }: { t: Dict['chat'] }) {
           m.role === 'user' ? (
             <p key={i} className="ms-auto w-fit max-w-[85%] whitespace-pre-wrap rounded-[var(--r)] bg-note px-5 py-3 text-paper">{m.content}</p>
           ) : (
-            <p key={i} className="max-w-[92%] whitespace-pre-wrap rounded-[var(--r)] border border-foil bg-paper-hi px-5 py-3 leading-relaxed">{rich(m.content)}</p>
+            <p key={i} data-tour="chat-answer" className="max-w-[92%] whitespace-pre-wrap rounded-[var(--r)] border border-foil bg-paper-hi px-5 py-3 leading-relaxed">{rich(m.content)}</p>
           ),
         )}
         {busy && msgs[msgs.length - 1]?.role === 'user' && <p className="font-mono text-sm text-ink-soft">{t.thinking}...</p>}
@@ -70,8 +70,8 @@ export function Chat({ t }: { t: Dict['chat'] }) {
         }}
         className="sticky bottom-4 flex gap-2 rounded-full border border-ink/40 bg-paper-hi p-1.5 shadow-[0_10px_24px_-14px_#082f2b99]"
       >
-        <input value={text} onChange={(e) => setText(e.target.value)} placeholder={t.placeholder} className="min-w-0 flex-1 bg-transparent px-4 outline-none" />
-        <button disabled={busy} className="rounded-full bg-note px-6 py-2.5 font-semibold text-paper hover:bg-note-deep disabled:opacity-50">{t.send}</button>
+        <input data-tour="chat-input" value={text} onChange={(e) => setText(e.target.value)} placeholder={t.placeholder} className="min-w-0 flex-1 bg-transparent px-4 outline-none" />
+        <button data-tour="chat-send" disabled={busy} className="rounded-full bg-note px-6 py-2.5 font-semibold text-paper hover:bg-note-deep disabled:opacity-50">{t.send}</button>
       </form>
       <p className="text-center font-mono text-[11px] tracking-[.1em] text-ink-soft">{t.note}</p>
     </div>

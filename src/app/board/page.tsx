@@ -6,6 +6,7 @@ import { getDict } from '@/i18n/server';
 import { requireOffice } from '@/server/auth';
 import { loadBoard } from '@/server/queries';
 import { signOut } from '../login/actions';
+import { isDemoEmail } from '@/server/tour';
 import { addClient } from './actions';
 import { LiveRefresh } from './LiveRefresh';
 
@@ -15,7 +16,7 @@ const ORDER = ['strange', 'missing', 'silent', 'review', 'ready'] as const;
 const GRID = 'grid grid-cols-[1fr_auto] items-center gap-x-4 sm:grid-cols-[84px_1fr_92px_92px_72px_150px]';
 
 export default async function Board() {
-  const { officeId } = await requireOffice();
+  const { officeId, email } = await requireOffice();
   const { lang, t } = await getDict();
   const b = t.board;
   const rows = (await loadBoard(officeId)).sort((a, c) => ORDER.indexOf(a.status) - ORDER.indexOf(c.status));
@@ -42,7 +43,8 @@ export default async function Board() {
               <Flaps value={flap(total)} hot />
               <p className="mt-1 text-xs text-paper/80">{b.toReview}</p>
             </div>
-            <Link href="/chat" className="rounded-full bg-foil px-4 py-2 text-sm font-semibold text-note-deep hover:bg-paper">{b.ask}</Link>
+            <Link href="/chat" data-tour="ask" className="rounded-full bg-foil px-4 py-2 text-sm font-semibold text-note-deep hover:bg-paper">{b.ask}</Link>
+            {isDemoEmail(email) && <Link href="/board?tour=1" className="rounded-full border border-foil px-4 py-2 text-sm font-semibold text-foil hover:bg-foil hover:text-note-deep">{b.replay}</Link>}
             <LangToggle className="text-foil hover:bg-foil hover:text-note-deep" />
             <form action={signOut}>
               <button className="rounded-full border border-paper/50 px-4 py-2 text-sm hover:border-foil hover:text-foil">{b.signOut}</button>
@@ -50,7 +52,7 @@ export default async function Board() {
           </div>
         </header>
 
-        <div role="table" aria-label={b.title}>
+        <div role="table" aria-label={b.title} data-tour="board">
           <div role="row" className={`${GRID} border-b-2 border-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[.14em] text-ink-soft sm:px-8`}>
             <span role="columnheader" className="hidden sm:block">{b.cols.no}</span>
             <span role="columnheader">{b.cols.client}</span>
@@ -64,6 +66,7 @@ export default async function Board() {
               key={r.id}
               href={`/board/${r.id}`}
               role="row"
+              data-tour={`row-${r.id}`}
               className={`${GRID} min-h-16 border-b border-rule px-5 py-3 transition-colors hover:bg-[#e9efdc] sm:px-8`}
             >
               <span role="cell" className="hidden font-mono text-xs tracking-[.14em] text-ink-soft sm:block">{serial(r.id)}</span>
@@ -73,7 +76,7 @@ export default async function Board() {
               <span role="cell" className="hidden font-mono text-sm sm:block">{nf.format(r.counts.missing.length)}</span>
               <span role="cell">
                 {r.status === 'strange' ? (
-                  <span className="inline-block -rotate-3 rounded-lg border-2 border-void px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-[.16em] text-void rtl:rotate-3">{b.status.strange}</span>
+                  <span data-tour="stamp" className="inline-block -rotate-3 rounded-lg border-2 border-void px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-[.16em] text-void rtl:rotate-3">{b.status.strange}</span>
                 ) : (
                   <span className={`text-sm ${r.status === 'ready' || r.status === 'review' ? 'font-semibold text-note' : 'text-ink-soft'}`}>{b.status[r.status]}</span>
                 )}
