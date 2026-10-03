@@ -62,7 +62,11 @@ export default async function ClientDetail({ params }: { params: Promise<{ clien
             <h1 className="mt-2 font-disp text-3xl font-bold sm:text-4xl">{lang === 'ar' ? client.name : client.name_en || client.name}</h1>
             <p className="mt-2 font-mono text-xs tracking-[.08em] text-paper/70" dir="ltr">{r.uploadLink}: /c/{client.token}</p>
           </div>
-          <LangToggle className="text-foil hover:bg-foil hover:text-note-deep" />
+          <div className="flex flex-wrap items-center gap-3">
+            <a href={`/api/export/${client.id}?format=xlsx`} className="rounded-full bg-foil px-4 py-2 text-sm font-semibold text-note-deep hover:bg-paper">Excel</a>
+            <a href={`/api/export/${client.id}?format=pdf`} className="rounded-full bg-foil px-4 py-2 text-sm font-semibold text-note-deep hover:bg-paper">PDF</a>
+            <LangToggle className="text-foil hover:bg-foil hover:text-note-deep" />
+          </div>
         </div>
       </header>
 
