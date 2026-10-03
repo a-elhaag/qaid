@@ -1,7 +1,7 @@
 import { Agent, run, type AgentInputItem, setDefaultOpenAIClient, setTracingDisabled } from '@openai/agents';
 import { ASK_SYSTEM_PROMPT } from '@/brain/ask/prompt';
 import { openai } from './ai';
-import { buildTools } from './askTools';
+import { allClientsOf, buildTools } from './askTools';
 import { route } from './models';
 import { monthKey } from './queries';
 
@@ -15,10 +15,11 @@ function setup() {
 
 export async function askAgentStream(officeId: string, messages: { role: 'user' | 'assistant'; content: string }[]) {
   setup();
+  const roster = (await allClientsOf(officeId)).map((c) => `${c.name} (${c.name_en})`).join('; ');
   const agent = new Agent({
     name: 'Qaid',
     model: route('chat').model,
-    instructions: `${ASK_SYSTEM_PROMPT}\nCurrent month: ${monthKey(new Date())}.`,
+    instructions: `${ASK_SYSTEM_PROMPT}\nToday is ${new Date().toISOString().slice(0, 10)}; the current month is ${monthKey(new Date())}.\nThe office's clients: ${roster || 'none yet'}.`,
     tools: buildTools(officeId),
   });
   const input: AgentInputItem[] = messages.map((m) =>
