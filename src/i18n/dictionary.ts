@@ -61,6 +61,7 @@ const en = {
     reassure: 'Your accountant will check it. You can close this page.',
     noAccount: 'No account needed',
     error: 'It did not send. Check your connection and try again.',
+    retake: { blurry: 'The photo is blurry. Hold steady and try again.', dark: 'Too dark. Move to better light and try again.', bright: 'Too bright. Avoid glare and try again.' },
     invented: 'Demo data is invented',
   },
   chat: {
@@ -145,6 +146,7 @@ const ar: typeof en = {
     reassure: 'سيراجعه محاسبك. يمكنك إغلاق الصفحة.',
     noAccount: 'بدون حساب',
     error: 'لم يُرسل. تحقق من الاتصال وحاول مرة أخرى.',
+    retake: { blurry: 'الصورة غير واضحة. ثبّت يدك وصوّر مرة أخرى.', dark: 'الصورة معتمة. انتقل لمكان أكثر إضاءة وحاول مجددًا.', bright: 'إضاءة زائدة. تجنب الانعكاس وحاول مجددًا.' },
     invented: 'بيانات تجريبية مخترعة',
   },
   chat: {

@@ -1,23 +1,16 @@
 'use client';
 import { useRef, useState, type ReactNode } from 'react';
 import type { Dict } from '@/i18n/dictionary';
-
-async function downscale(file: File, maxSide = 1600): Promise<Blob> {
-  const bmp = await createImageBitmap(file);
-  const k = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
-  const c = document.createElement('canvas');
-  c.width = Math.round(bmp.width * k);
-  c.height = Math.round(bmp.height * k);
-  c.getContext('2d')!.drawImage(bmp, 0, 0, c.width, c.height);
-  return new Promise((res) => c.toBlob((b) => res(b!), 'image/jpeg', 0.85));
-}
+import type { Reason } from '@/brain/scan/quality';
+import { checkAndCrop } from './scan';
 
 type Props = { token: string; name: string; office: string; t: Dict['client']; lang: 'en' | 'ar'; art: ReactNode; toggle: ReactNode };
 
 // The whole phone page: one foil button, then a "got it" screen. Nothing else.
 export function Uploader({ token, name, office, t, art, toggle }: Props) {
   const input = useRef<HTMLInputElement>(null);
-  const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error' | 'retake'>('idle');
+  const [reason, setReason] = useState<Reason>('blurry');
   const done = state === 'done';
 
   async function onPick(files: FileList | null) {
@@ -25,7 +18,16 @@ export function Uploader({ token, name, office, t, art, toggle }: Props) {
     setState('sending');
     try {
       const form = new FormData();
-      for (const f of Array.from(files)) form.append('file', await downscale(f), 'receipt.jpg');
+      for (const f of Array.from(files)) {
+        const r = await checkAndCrop(f);
+        if (!r.ok && r.reason) {
+          setReason(r.reason);
+          setState('retake');
+          if (input.current) input.current.value = '';
+          return;
+        }
+        form.append('file', r.blob, 'receipt.jpg');
+      }
       const r = await fetch(`/api/upload?token=${token}`, { method: 'POST', body: form });
       setState(r.ok ? 'done' : 'error');
     } catch {
@@ -68,6 +70,7 @@ export function Uploader({ token, name, office, t, art, toggle }: Props) {
               {state === 'sending' ? t.sending : done ? t.another : t.send}
             </span>
           </button>
+          {state === 'retake' && <p role="alert" className="max-w-[28ch] rounded-xl bg-foil px-4 py-3 text-center text-sm font-semibold text-note-deep">{t.retake[reason]}</p>}
           {state === 'error' && <p role="alert" className="max-w-[28ch] rounded-xl bg-void px-4 py-3 text-center text-sm text-paper">{t.error}</p>}
         </div>
 
