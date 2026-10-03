@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { askAgent } from '@/server/agent';
+import { askAgentStream } from '@/server/agent';
 import { requireOffice } from '@/server/auth';
 
 export const maxDuration = 60;
@@ -13,7 +13,8 @@ export async function POST(req: Request) {
     .map((m) => ({ role: m.role as 'user' | 'assistant', content: String(m.content).slice(0, 2000) }));
   if (!messages.length || messages[messages.length - 1].role !== 'user') return NextResponse.json({ error: 'no messages' }, { status: 400 });
   try {
-    return NextResponse.json({ answer: await askAgent(officeId, messages) });
+    const text = (await askAgentStream(officeId, messages)) as unknown as ReadableStream<string>; // agents-core ships its own stream type
+    return new Response(text.pipeThrough(new TextEncoderStream()), { headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' } });
   } catch {
     return NextResponse.json({ error: 'agent' }, { status: 502 });
   }

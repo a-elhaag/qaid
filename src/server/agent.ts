@@ -13,7 +13,7 @@ function setup() {
   ready = true;
 }
 
-export async function askAgent(officeId: string, messages: { role: 'user' | 'assistant'; content: string }[]) {
+export async function askAgentStream(officeId: string, messages: { role: 'user' | 'assistant'; content: string }[]) {
   setup();
   const agent = new Agent({
     name: 'Qaid',
@@ -26,6 +26,6 @@ export async function askAgent(officeId: string, messages: { role: 'user' | 'ass
       ? { role: 'user', content: m.content }
       : { role: 'assistant', status: 'completed', content: [{ type: 'output_text', text: m.content }] },
   );
-  const r = await run(agent, input);
-  return String(r.finalOutput ?? '');
+  const r = await run(agent, input, { stream: true });
+  return r.toTextStream(); // text deltas of the final answer; tool calls run silently before it
 }
