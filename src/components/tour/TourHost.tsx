@@ -273,6 +273,7 @@ export function TourHost({ t }: { t: T }) {
 
   if (!on) return null;
   const pad = 10;
+  const barOnTop = !!spot && spot.y + spot.h / 2 > window.innerHeight * 0.55; // keep the caption clear of what it points at
   return (
     <>
       {spot && (
@@ -298,7 +299,7 @@ export function TourHost({ t }: { t: T }) {
       <div
         role="status"
         aria-live="polite"
-        className="fixed inset-x-3 bottom-3 z-[100] mx-auto flex max-w-3xl flex-wrap items-center gap-x-4 gap-y-2 rounded-[22px] border border-foil bg-note-deep/95 px-5 py-4 text-paper shadow-[0_20px_40px_-12px_#000a] backdrop-blur"
+        className={`fixed inset-x-3 ${barOnTop ? 'top-3' : 'bottom-3'} z-[100] mx-auto flex max-w-3xl flex-wrap items-center gap-x-4 gap-y-2 rounded-[22px] border border-foil bg-note-deep/95 px-5 py-4 text-paper shadow-[0_20px_40px_-12px_#000a] backdrop-blur`}
       >
         {live && <span className="rounded-full bg-void px-2.5 py-1 font-mono text-[10px] font-semibold tracking-[.2em]">{t.live}</span>}
         <p className="min-w-[14rem] flex-1 text-[15px] leading-snug">{caption}</p>
