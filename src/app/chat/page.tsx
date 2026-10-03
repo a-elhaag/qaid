@@ -17,7 +17,7 @@ export default async function ChatPage() {
             <Link href="/board" data-tour="back" className="font-mono text-xs tracking-[.14em] text-foil hover:underline">← {t.board.title}</Link>
             <h1 className="mt-1 font-disp text-3xl font-bold">{t.chat.title}</h1>
           </div>
-          <LangToggle className="text-foil hover:bg-foil hover:text-note-deep" />
+          <LangToggle />
         </div>
       </header>
       <Chat t={t.chat} />

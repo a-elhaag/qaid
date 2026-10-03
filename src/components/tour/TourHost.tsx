@@ -38,6 +38,7 @@ export function TourHost({ t }: { t: T }) {
   const sp = useSearchParams();
   const path = usePathname();
   const running = useRef(false);
+  const done = useRef(false); // true while the finale bubble is showing
   const abort = useRef(false);
   const paused = useRef(false);
   const target = useRef<(() => Target) | null>(null);
@@ -66,13 +67,21 @@ export function TourHost({ t }: { t: T }) {
   }, [on]);
 
   useEffect(() => {
-    if (window.self !== window.top || running.current) return; // never inside the phone preview iframe
+    if (window.self !== window.top) return; // never inside the phone preview iframe
+    if (running.current && !done.current) return;
     const fresh = sp.get('tour') === '1' && path === '/board';
     const stale = localStorage.getItem(SINCE_KEY);
     if (!fresh) {
       const old = stale && Date.now() - Date.parse(stale) > STALE_MS;
       if (old && (path.startsWith('/board') || path.startsWith('/chat'))) endTour(stale).finally(() => localStorage.removeItem(SINCE_KEY));
       return;
+    }
+    if (done.current) {
+      // replay pressed while the previous tour's final bubble is still up
+      done.current = false;
+      setFinale(false);
+      setStep(0);
+      setPhone(null);
     }
     running.current = true;
     history.replaceState(null, '', '/board');
@@ -289,6 +298,7 @@ export function TourHost({ t }: { t: T }) {
         abort.current = false;
         running.current = false;
       } else {
+        done.current = true;
         setStep(STEPS);
         setCaption(t.done);
         setFinale(true);
@@ -300,6 +310,7 @@ export function TourHost({ t }: { t: T }) {
     setOn(false);
     setFinale(false);
     running.current = false;
+    done.current = false;
     abort.current = false;
     paused.current = false;
     setIsPaused(false);

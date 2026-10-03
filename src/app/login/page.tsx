@@ -20,7 +20,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
           <div className="flex flex-col justify-between gap-10">
             <div className="flex items-start justify-between gap-4">
               <span className="font-mono text-xs tracking-[.22em] text-foil">QD 0472913</span>
-              <LangToggle className="text-foil hover:bg-foil hover:text-note-deep" />
+              <LangToggle className="rounded-full border-2 border-foil px-5 py-2.5 text-sm font-semibold text-foil hover:bg-foil hover:text-note-deep" />
             </div>
             <div>
               <h1 className="font-disp text-[clamp(72px,14vw,150px)] font-bold leading-[.9] tracking-tight">{t.brand}</h1>

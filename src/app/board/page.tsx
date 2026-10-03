@@ -8,6 +8,7 @@ import { loadBoard } from '@/server/queries';
 import { signOut } from '../login/actions';
 import { isDemoEmail } from '@/server/tour';
 import { addClient } from './actions';
+import { btnPrimary, btnSolid } from '@/components/buttons';
 import { PhonePanel } from '@/components/PhonePanel';
 import { LiveRefresh } from './LiveRefresh';
 
@@ -44,12 +45,12 @@ export default async function Board() {
               <Flaps value={flap(total)} hot />
               <p className="mt-1 text-xs text-paper/80">{b.toReview}</p>
             </div>
-            <PhonePanel clients={rows.map((r) => ({ id: r.id, name: r.name, nameEn: r.nameEn, token: r.token }))} lang={lang} t={t.scan} className="rounded-full border border-foil px-4 py-2 text-sm font-semibold text-foil hover:bg-foil hover:text-note-deep" />
-            <Link href="/chat" data-tour="ask" className="rounded-full bg-foil px-4 py-2 text-sm font-semibold text-note-deep hover:bg-paper">{b.ask}</Link>
-            {isDemoEmail(email) && <Link href="/board?tour=1" className="rounded-full border border-foil px-4 py-2 text-sm font-semibold text-foil hover:bg-foil hover:text-note-deep">{b.replay}</Link>}
-            <LangToggle className="text-foil hover:bg-foil hover:text-note-deep" />
+            <PhonePanel clients={rows.map((r) => ({ id: r.id, name: r.name, nameEn: r.nameEn, token: r.token }))} lang={lang} t={t.scan} className={btnSolid} />
+            <Link href="/chat" data-tour="ask" className={btnPrimary}>{b.ask}</Link>
+            {isDemoEmail(email) && <Link href="/board?tour=1" className={btnSolid}>{b.replay}</Link>}
+            <LangToggle />
             <form action={signOut}>
-              <button className="rounded-full border border-paper/50 px-4 py-2 text-sm hover:border-foil hover:text-foil">{b.signOut}</button>
+              <button className={btnSolid}>{b.signOut}</button>
             </form>
           </div>
         </header>

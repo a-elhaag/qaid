@@ -20,7 +20,7 @@ export default async function ClientPage({ params }: { params: Promise<{ token: 
       t={t.client}
       lang={lang}
       art={<Guilloche w={420} h={820} className="absolute inset-0 h-full w-full" />}
-      toggle={<LangToggle className="text-foil hover:bg-foil hover:text-note-deep" />}
+      toggle={<LangToggle className="rounded-full border-2 border-foil px-5 py-2.5 text-sm font-semibold text-foil hover:bg-foil hover:text-note-deep" />}
     />
   );
 }
