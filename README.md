@@ -10,7 +10,9 @@ Built for a hackathon (build window 1 to 3 October 2026). Demo data is invented.
 
 ## Try it in 5 minutes
 
-1. Run it locally (see [Run it locally](#run-it-locally)), then open `/login`.
+Live: **https://qaid-bay.vercel.app/login** (or run it locally, see [Run it locally](#run-it-locally)).
+
+1. Open `/login`.
 2. Press **Enter as Ahmed**. An auto-playing tour drives the real app for about two minutes: a client sends a receipt from a phone, the board fills in, Ahmed confirms it, an Arabic reminder is drafted, the chat answers a question, and the month-end pack is shown. Pause or skip it any time.
 3. When the tour ends, the account is yours with the seeded data:
    - **Phone scan** (board header or any client page) opens the client's phone page in a phone frame, plus a QR code for a real phone. Send a receipt photo and watch the board.
