@@ -4,7 +4,7 @@ import { buildReminderMessages } from '@/brain/draft/reminder';
 import { priceChanges, profitAndLoss, vatSummary } from '@/brain/ledger';
 import { chatText } from './ai';
 import { db } from './db';
-import { loadBoard, mapEntry, monthKey, shiftMonth } from './queries';
+import { loadBoard, mapEntry, missingLabels, monthKey, shiftMonth } from './queries';
 
 type C = { id: string; name: string; name_en: string };
 
@@ -73,7 +73,7 @@ export function buildTools(officeId: string) {
         if (!c) return notFound(q);
         const row = (await loadBoard(officeId)).find((r) => r.id === c.id);
         if (!row?.counts.missing.length) return { client: c.name, draft: null, note: 'nothing is missing' };
-        return { client: c.name, month: monthKey(new Date()), draft: await chatText(buildReminderMessages({ clientName: c.name, month: monthKey(new Date()), missing: row.counts.missing })) };
+        return { client: c.name, month: monthKey(new Date()), draft: await chatText(buildReminderMessages({ clientName: c.name, month: monthKey(new Date()), missing: await missingLabels(c.id, row.counts.missing) })) };
       },
     }),
   ];

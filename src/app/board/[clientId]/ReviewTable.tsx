@@ -50,7 +50,7 @@ export function ReviewTable({ rows, failed, t }: { rows: ReviewRow[]; failed: { 
           {r.imageUrl ? (
             <a href={r.imageUrl} target="_blank" rel="noreferrer" aria-label={t.receipt}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={r.imageUrl} alt="" className="h-36 w-32 rounded-md object-cover shadow-[0_8px_14px_-8px_#0007]" />
+              <img src={r.imageUrl} alt="" className="h-36 w-32 rounded-md bg-paper object-contain shadow-[0_8px_14px_-8px_#0007]" />
             </a>
           ) : (
             <span className="grid h-36 w-32 place-items-center rounded-md border border-dashed border-ink/30 text-xs text-ink-soft">{t.noImage}</span>

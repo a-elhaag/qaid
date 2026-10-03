@@ -86,8 +86,8 @@ export default async function ClientDetail({ params }: { params: Promise<{ clien
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
                 </span>
                 <span>
-                  <span className="font-semibold">{e.vendor}</span>
-                  <span className="ms-3 font-mono text-xs text-ink-soft">{e.entry_date} · {r.cats[e.category as keyof typeof r.cats]}</span>
+                  <bdi className="font-semibold">{e.vendor}</bdi>
+                  <span className="ms-3 font-mono text-xs text-ink-soft"><bdi>{e.entry_date}</bdi> · {r.cats[e.category as keyof typeof r.cats]}</span>
                 </span>
                 <span className="font-mono">{nf.format(Number(e.total))}</span>
               </li>

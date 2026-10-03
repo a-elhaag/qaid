@@ -67,7 +67,7 @@ export default async function Board() {
               className={`${GRID} min-h-16 border-b border-rule px-5 py-3 transition-colors hover:bg-[#e9efdc] sm:px-8`}
             >
               <span role="cell" className="hidden font-mono text-xs tracking-[.14em] text-ink-soft sm:block">{serial(r.id)}</span>
-              <span role="cell" className="font-disp text-lg font-bold">{r.name}</span>
+              <span role="cell" className="font-disp text-lg font-bold">{lang === 'ar' ? r.name : r.nameEn}</span>
               <span role="cell" className="hidden sm:block"><Flaps value={flap(r.counts.review)} hot={r.counts.review > 0} /></span>
               <span role="cell" className="hidden sm:block"><Flaps value={flap(r.counts.flags)} /></span>
               <span role="cell" className="hidden font-mono text-sm sm:block">{nf.format(r.counts.missing.length)}</span>

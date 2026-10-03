@@ -12,6 +12,7 @@ export function shiftMonth(m: string, delta: number) {
 export interface BoardRow {
   id: string;
   name: string;
+  nameEn: string;
   token: string;
   status: ClientStatus;
   counts: { review: number; flags: number; missing: string[]; uploads: number };
@@ -33,7 +34,7 @@ export const mapEntry = (r: any): Entry => ({
 
 export async function loadBoard(officeId: string, now = new Date()): Promise<BoardRow[]> {
   const cur = monthKey(now);
-  const clients = await db().from('clients').select('id,name,token').eq('office_id', officeId).order('name');
+  const clients = await db().from('clients').select('id,name,name_en,token').eq('office_id', officeId).order('name');
   const ids = (clients.data ?? []).map((c) => c.id);
   if (!ids.length) return [];
   const [docs, entries, flags, expected] = await Promise.all([
@@ -61,9 +62,16 @@ export async function loadBoard(officeId: string, now = new Date()): Promise<Boa
     return {
       id: c.id,
       name: c.name,
+      nameEn: c.name_en || c.name,
       token: c.token,
       status: clientStatus({ openFlags, missing: missing.length, silent, needsReview: review }),
       counts: { review, flags: openFlags, missing, uploads },
     };
   });
+}
+
+/** Friendly document labels ("rent receipt") for missing vendors; falls back to the vendor name. */
+export async function missingLabels(clientId: string, vendors: string[]): Promise<string[]> {
+  const { data } = await db().from('expected_docs').select('vendor,label').eq('client_id', clientId);
+  return vendors.map((v) => data?.find((l) => l.vendor === v)?.label ?? v);
 }

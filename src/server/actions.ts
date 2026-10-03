@@ -9,7 +9,7 @@ import { canConfirm, cleanPatch } from './entryRules';
 import { drainWithRetries } from './jobs';
 import { enqueue, supabaseJobStore } from './jobStore';
 import { handlers, onDead } from './processDocument';
-import { loadBoard, monthKey } from './queries';
+import { loadBoard, missingLabels, monthKey } from './queries';
 
 /** Entry ids that belong to the caller's office. Browser-sent ids are never trusted. */
 async function ownedEntryIds(officeId: string, ids: string[]): Promise<string[]> {
@@ -60,7 +60,8 @@ export async function draftReminderAction(clientId: string): Promise<string> {
   const { officeId } = await requireOffice();
   const row = (await loadBoard(officeId)).find((r) => r.id === clientId); // office-scoped: another office's id finds nothing
   if (!row) return '';
-  const missing = row.counts.missing.length ? row.counts.missing : row.status === 'silent' ? ['إيصالات هذا الشهر'] : [];
+  let missing = row.counts.missing.length ? row.counts.missing : row.status === 'silent' ? ['إيصالات هذا الشهر'] : [];
+  if (row.counts.missing.length) missing = await missingLabels(clientId, missing);
   if (!missing.length) return '';
   return chatText(buildReminderMessages({ clientName: row.name, month: monthKey(new Date()), missing }));
 }

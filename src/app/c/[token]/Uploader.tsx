@@ -43,7 +43,7 @@ export function Uploader({ token, name, office, t, art, toggle }: Props) {
       <section
         className={`relative flex min-h-dvh w-full max-w-md flex-col justify-between overflow-hidden p-6 sm:min-h-[640px] sm:rounded-[44px] sm:border-8 sm:border-ink ${done ? 'bg-paper text-note' : 'bg-note text-paper'}`}
       >
-        <div className={done ? 'opacity-40 [&_svg]:!stroke-[var(--note)]' : ''}>{art}</div>
+        <div className={done ? 'opacity-25 [&_svg]:!stroke-[var(--note)]' : ''}>{art}</div>
 
         <div className="relative flex items-start justify-between gap-3">
           <div>
