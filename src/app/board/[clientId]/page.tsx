@@ -7,6 +7,7 @@ import { requireOffice } from '@/server/auth';
 import { db } from '@/server/db';
 import { loadBoard } from '@/server/queries';
 import { LiveRefresh } from '../LiveRefresh';
+import { PhonePanel } from '@/components/PhonePanel';
 import { Reminder } from './Reminder';
 import { ReviewTable, type ReviewRow } from './ReviewTable';
 
@@ -63,6 +64,7 @@ export default async function ClientDetail({ params }: { params: Promise<{ clien
             <p className="mt-2 font-mono text-xs tracking-[.08em] text-paper/70" dir="ltr">{r.uploadLink}: /c/{client.token}</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
+            <PhonePanel clients={[{ id: client.id, name: client.name, nameEn: client.name_en || client.name, token: client.token }]} initialId={client.id} lang={lang} t={t.scan} className="rounded-full border border-foil px-4 py-2 text-sm font-semibold text-foil hover:bg-foil hover:text-note-deep" />
             <span data-tour="export" className="flex gap-3">
             <a href={`/api/export/${client.id}?format=xlsx`} className="rounded-full bg-foil px-4 py-2 text-sm font-semibold text-note-deep hover:bg-paper">Excel</a>
             <a href={`/api/export/${client.id}?format=pdf`} className="rounded-full bg-foil px-4 py-2 text-sm font-semibold text-note-deep hover:bg-paper">PDF</a>

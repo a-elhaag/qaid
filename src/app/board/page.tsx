@@ -8,6 +8,7 @@ import { loadBoard } from '@/server/queries';
 import { signOut } from '../login/actions';
 import { isDemoEmail } from '@/server/tour';
 import { addClient } from './actions';
+import { PhonePanel } from '@/components/PhonePanel';
 import { LiveRefresh } from './LiveRefresh';
 
 export const dynamic = 'force-dynamic';
@@ -43,6 +44,7 @@ export default async function Board() {
               <Flaps value={flap(total)} hot />
               <p className="mt-1 text-xs text-paper/80">{b.toReview}</p>
             </div>
+            <PhonePanel clients={rows.map((r) => ({ id: r.id, name: r.name, nameEn: r.nameEn, token: r.token }))} lang={lang} t={t.scan} className="rounded-full border border-foil px-4 py-2 text-sm font-semibold text-foil hover:bg-foil hover:text-note-deep" />
             <Link href="/chat" data-tour="ask" className="rounded-full bg-foil px-4 py-2 text-sm font-semibold text-note-deep hover:bg-paper">{b.ask}</Link>
             {isDemoEmail(email) && <Link href="/board?tour=1" className="rounded-full border border-foil px-4 py-2 text-sm font-semibold text-foil hover:bg-foil hover:text-note-deep">{b.replay}</Link>}
             <LangToggle className="text-foil hover:bg-foil hover:text-note-deep" />
