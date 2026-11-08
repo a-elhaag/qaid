@@ -9,7 +9,7 @@ let ready = false;
 function setup() {
   if (ready) return;
   setTracingDisabled(true); // no traces to the OpenAI platform
-  setDefaultOpenAIClient(openai('chat')); // Responses API is the default and is what GPT-6 needs for tools
+  setDefaultOpenAIClient(openai('chat')); // Responses API is the default; Groq serves it (beta) at the same base URL
   ready = true;
 }
 

@@ -21,7 +21,7 @@ export async function categorise(i: { vendor: string; docType: DocType; total: n
           properties: {
             category: { type: 'string', enum: [...CATEGORIES] },
             confidence: { type: 'number' },
-            question: { type: ['string', 'null'], description: 'One short Arabic question for the accountant if confidence is below 0.7, else null' },
+            question: { anyOf: [{ type: 'string' }, { type: 'null' }], description: 'One short Arabic question for the accountant if confidence is below 0.7, else null' },
           },
         },
       },

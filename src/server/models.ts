@@ -1,4 +1,4 @@
-export type JobKind = 'extract' | 'categorise' | 'chat' | 'draft' | 'parse';
+export type JobKind = 'extract' | 'categorise' | 'chat' | 'draft' | 'vision';
 
 const req = (k: string) => {
   const v = process.env[k];
@@ -6,19 +6,14 @@ const req = (k: string) => {
   return v;
 };
 
+/** Groq, OpenAI-compatible. Text jobs run gpt-oss (strict JSON schema); vision jobs (OCR and the image lane) run Qwen. */
 export function route(job: JobKind) {
-  const resource = req('FOUNDRY_RESOURCE');
   const model = {
-    extract: process.env.MODEL_EXTRACT ?? 'gpt-6.1-sol',
-    categorise: process.env.MODEL_EXTRACT ?? 'gpt-6.1-sol',
-    chat: process.env.MODEL_CHAT ?? 'gpt-6-astra',
-    draft: process.env.MODEL_CHAT ?? 'gpt-6-astra',
-    parse: process.env.MODEL_PARSE ?? 'cohere-parse-v5',
+    extract: process.env.MODEL_EXTRACT ?? 'openai/gpt-oss-120b',
+    categorise: process.env.MODEL_EXTRACT ?? 'openai/gpt-oss-120b',
+    chat: process.env.MODEL_CHAT ?? 'openai/gpt-oss-120b',
+    draft: process.env.MODEL_CHAT ?? 'openai/gpt-oss-120b',
+    vision: process.env.MODEL_VISION ?? 'qwen/qwen3.8-27b',
   }[job];
-  return {
-    model,
-    apiKey: req('FOUNDRY_API_KEY'),
-    openaiBaseURL: `https://${resource}.openai.azure.com/openai/v1/`,
-    cohereBaseURL: `https://${resource}.services.ai.azure.com/providers/cohere`,
-  };
+  return { model, apiKey: req('GROQ_API_KEY'), baseURL: 'https://api.groq.com/openai/v1' };
 }

@@ -34,15 +34,15 @@ describe('extractReceipt', () => {
 });
 
 describe('parseToMarkdown', () => {
-  beforeAll(() => { vi.stubEnv('FOUNDRY_RESOURCE', 'qaid'); vi.stubEnv('FOUNDRY_API_KEY', 'k'); });
-  it('joins page markdown and sends a data URI', async () => {
-    let doc: unknown;
-    const fake = { parse: async (req: { document: unknown }) => { doc = req.document; return { pages: [{ type: 'markdown', markdown: { content: 'a' } }, { type: 'markdown', markdown: { content: 'b' } }] }; } };
-    expect(await parseToMarkdown('QQ', 'image/png', fake as never)).toBe('a\nb');
-    expect(doc).toEqual({ type: 'image_url', imageUrl: 'data:image/png;base64,QQ' });
+  beforeAll(() => { vi.stubEnv('GROQ_API_KEY', 'k'); });
+  const fake = (content: string | null, seen?: (req: unknown) => void) =>
+    ({ create: async (req: unknown) => { seen?.(req); return { choices: [{ message: { content } }] }; } });
+  it('returns the transcription and sends a data URI', async () => {
+    let req: { messages: { content: { image_url?: { url: string } }[] }[] } | undefined;
+    expect(await parseToMarkdown('QQ', 'image/png', fake('a\nb', (r) => (req = r as never)) as never)).toBe('a\nb');
+    expect(req!.messages[0].content[1].image_url!.url).toBe('data:image/png;base64,QQ');
   });
   it('throws on empty output', async () => {
-    const fake = { parse: async () => ({ pages: [{ type: 'markdown', markdown: { content: '  ' } }] }) };
-    await expect(parseToMarkdown('QQ', 'image/png', fake as never)).rejects.toThrow('empty');
+    await expect(parseToMarkdown('QQ', 'image/png', fake('  ') as never)).rejects.toThrow('empty');
   });
 });
