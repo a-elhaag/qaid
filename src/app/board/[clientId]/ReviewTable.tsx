@@ -22,10 +22,10 @@ export interface ReviewRow {
 const input = 'w-full rounded-lg border border-ink/30 bg-paper-hi px-2.5 py-1.5 text-sm outline-none focus:border-note';
 
 export function ReviewTable({ rows, failed, t }: { rows: ReviewRow[]; failed: { id: string }[]; t: Dict['review'] }) {
-  const [picked, setPicked] = useState<string[]>(rows.map((r) => r.id));
+  const [unpicked, setUnpicked] = useState<string[]>([]); // opt-out, so rows that arrive live start checked
   const [skipped, setSkipped] = useState(0);
   const [pending, start] = useTransition();
-  const live = picked.filter((id) => rows.some((r) => r.id === id)); // rows vanish after confirm
+  const live = rows.map((r) => r.id).filter((id) => !unpicked.includes(id));
   const dis = (r: ReviewRow, f: string) => (r.agreement[f] === 'disputed' ? 'ring-2 ring-foil bg-[#f6ecc8]' : '');
   const label = 'mb-1 block font-mono text-[10px] uppercase tracking-[.14em] text-ink-soft';
 
@@ -44,8 +44,8 @@ export function ReviewTable({ rows, failed, t }: { rows: ReviewRow[]; failed: { 
             type="checkbox"
             aria-label={t.confirmSel}
             className="mt-1 h-5 w-5 accent-[var(--note)]"
-            checked={picked.includes(r.id)}
-            onChange={(e) => setPicked(e.target.checked ? [...picked, r.id] : picked.filter((x) => x !== r.id))}
+            checked={!unpicked.includes(r.id)}
+            onChange={(e) => setUnpicked(e.target.checked ? unpicked.filter((x) => x !== r.id) : [...unpicked, r.id])}
           />
           {r.imageUrl ? (
             <a href={r.imageUrl} target="_blank" rel="noreferrer" aria-label={t.receipt}>
