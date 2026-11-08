@@ -28,7 +28,7 @@ The tour cleans up after itself, so the seeded data is untouched when it ends.
 | Who | What |
 |---|---|
 | Client (shop owner, phone) | Opens a private link, no account, taps one button, photographs a receipt. The phone checks blur and light, crops, and can split several receipts in one photo. |
-| Qaid | Reads each receipt with two lanes (Cohere Parse v5 and GPT-6 vision) and fuses them, runs checks (duplicate, supplier price jump, VAT spike), proposes a category, and keeps a live board. |
+| Qaid | Reads each receipt with two lanes (Qwen vision OCR then gpt-oss, and Qwen vision direct) and fuses them, runs checks (duplicate, supplier price jump, VAT spike), proposes a category, and keeps a live board. |
 | Accountant | Sees every client on a ledger board with a status, reviews entries next to the source receipt, bulk-confirms, asks the chat questions, drafts Arabic reminders for missing documents, and downloads the month-end pack. |
 
 Status of a client, in priority order: **Needs you** (open flag), **Documents missing**, **Gone quiet** (no uploads), **Awaiting review**, **Clear**. Only confirmed entries count in any total.
@@ -44,8 +44,8 @@ Status of a client, in priority order: **Needs you** (open flag), **Documents mi
           |                 documents, entries, flags,
           v                 jobs, expected_docs, ...
    jobs table (queue) --> process_document:
-                           lane A: Cohere Parse v5 -> markdown -> GPT-6 structure
-                           lane B: GPT-6 vision
+                           lane A: Qwen vision OCR -> markdown -> gpt-oss structure
+                           lane B: Qwen vision direct
                            fuse() reconciles both, nothing is silently fixed
                            -> checks -> category -> entry + flags -> needs_review
 ```
@@ -53,7 +53,7 @@ Status of a client, in priority order: **Needs you** (open flag), **Documents mi
 - **App:** one Next.js 16 app (App Router, Turbopack, `src/proxy.ts` for route protection), Tailwind 4, TypeScript.
 - **Data:** Supabase Postgres with row-level security (an office only sees its own clients), a private `receipts` Storage bucket, and Supabase Auth for accountants. Clients use unguessable upload tokens, upload-only.
 - **Jobs:** a `jobs` table with `claim_job()` (`for update skip locked`), retries and a dead state. Uploads run `after()` with in-request retries; `GET /api/jobs/sweep` (called by `pg_cron` in production) is the backstop.
-- **AI:** Azure AI Foundry, one resource and key. `gpt-6.1-sol` extracts and categorises, `gpt-6-astra` chats and drafts, `cohere-parse-v5` parses. The model router in `src/server/models.ts` is the only file that knows model names and hosts.
+- **AI:** Groq, one key. `openai/gpt-oss-120b` structures, categorises, chats and drafts; `qwen/qwen3.8-27b` reads images (OCR and the vision lane). The model router in `src/server/models.ts` is the only file that knows model names and hosts.
 - **Chat:** an `@openai/agents` agent with tools over the office's data (`list_clients`, `client_overview`, `open_flags`, `month_summary`, `margin_change`, `vat_by_client`, `top_price_changes`, `recent_entries`, `clients_without_uploads`, `draft_reminder`). Every figure comes from a tool. Answers stream.
 - **The brain:** `src/brain/` is pure TypeScript with no Next or Supabase imports: ledger math (P&L, VAT, payroll, price changes), fusion, checks, client status, scan quality, reminder prompt, and the Excel/PDF builders. It can be lifted into another platform by wrapping it in an endpoint.
 
@@ -94,7 +94,7 @@ cp .env.example .env.local     # fill in the values below
 |---|---|
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Server-side Supabase access (never exposed to the browser) |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Browser and auth |
-| `FOUNDRY_RESOURCE`, `FOUNDRY_API_KEY` | One Foundry resource serves GPT-6 and Cohere Parse |
+| `GROQ_API_KEY` | Serves every model call |
 | `MODEL_EXTRACT`, `MODEL_CHAT`, `MODEL_PARSE` | Optional model overrides |
 | `FUSION` | `on` runs both reader lanes, `off` runs Parse only |
 | `CRON_SECRET` | Bearer secret for `GET /api/jobs/sweep` |
@@ -142,5 +142,8 @@ Phone cameras need HTTPS, which Vercel provides.
 
 - Architecture spec: [`docs/superpowers/specs/2026-10-02-qaid-architecture-design.md`](docs/superpowers/specs/2026-10-02-qaid-architecture-design.md)
 - Implementation plan and amendments: [`docs/superpowers/plans/2026-10-02-qaid-implementation.md`](docs/superpowers/plans/2026-10-02-qaid-implementation.md)
-- Cohere Parse request shapes: [`docs/notes/parse-api.md`](docs/notes/parse-api.md)
 - Pricing and impact estimates: [`docs/notes/pricing-and-impact.md`](docs/notes/pricing-and-impact.md)
+
+## Keeping Supabase awake
+
+Free Supabase projects pause after about 7 days idle. `vercel.json` runs a daily Vercel cron on `/api/jobs/sweep`, which reads the `jobs` table, so the project keeps seeing API traffic. Vercel sends `CRON_SECRET` as the bearer token automatically. If the project still pauses, upgrade to Pro.
