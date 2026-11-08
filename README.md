@@ -146,4 +146,4 @@ Phone cameras need HTTPS, which Vercel provides.
 
 ## Keeping Supabase awake
 
-Free Supabase projects pause after about 7 days idle. `vercel.json` runs a daily Vercel cron on `/api/jobs/sweep`, which reads the `jobs` table, so the project keeps seeing API traffic. Vercel sends `CRON_SECRET` as the bearer token automatically. If the project still pauses, upgrade to Pro.
+Free Supabase projects pause after about 7 days idle. `vercel.json` runs a daily Vercel cron on `/api/keepalive`, which does one tiny read of `offices`, so the project keeps seeing API traffic. Vercel sends `CRON_SECRET` as the bearer token automatically. If the project still pauses, upgrade to Pro.
